@@ -75,8 +75,10 @@ return [
         ],
 
         //custom messages, to overwrite for example the default authentication results messages
-        'messages' => [
+        'messages_options' => [
+            'messages' => [
 
+            ],
         ],
     ]
 ];

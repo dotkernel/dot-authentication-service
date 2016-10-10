@@ -36,7 +36,11 @@ class ConfigProvider
 
                 'storage_manager' => [],
 
-                'resolver_manager' => []
+                'resolver_manager' => [],
+
+                'messages_options' => [
+                    'messages' => [],
+                ],
             ]
         ];
     }
