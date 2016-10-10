@@ -17,7 +17,7 @@ use Zend\Stdlib\ArrayUtils;
  * Class MessageOptions
  * @package Dot\Authentication\Options
  */
-class MessageOptions extends AbstractOptions
+class MessagesOptions extends AbstractOptions
 {
     /** @var array */
     protected $messages = [

@@ -30,8 +30,8 @@ class AuthenticationOptions extends AbstractOptions
     /** @var  string */
     protected $identityHydratorClass;
 
-    /** @var  MessageOptions */
-    protected $messageOptions;
+    /** @var  MessagesOptions */
+    protected $messagesOptions;
 
     protected $__strictMode__ = false;
 
@@ -100,31 +100,31 @@ class AuthenticationOptions extends AbstractOptions
     }
 
     /**
-     * @return MessageOptions
+     * @return MessagesOptions
      */
-    public function getMessageOptions()
+    public function getMessagesOptions()
     {
-        if (!$this->messageOptions) {
-            $this->setMessageOptions([]);
+        if (!$this->messagesOptions) {
+            $this->setMessagesOptions([]);
         }
-        return $this->messageOptions;
+        return $this->messagesOptions;
     }
 
     /**
-     * @param MessageOptions|array $messageOptions
+     * @param MessagesOptions|array $messagesOptions
      * @return AuthenticationOptions
      */
-    public function setMessageOptions($messageOptions)
+    public function setMessagesOptions($messagesOptions)
     {
-        if (is_array($messageOptions)) {
-            $this->messageOptions = new MessageOptions($messageOptions);
-        } elseif ($messageOptions instanceof MessageOptions) {
-            $this->messageOptions = $messageOptions;
+        if (is_array($messagesOptions)) {
+            $this->messagesOptions = new MessagesOptions($messagesOptions);
+        } elseif ($messagesOptions instanceof MessagesOptions) {
+            $this->messagesOptions = $messagesOptions;
         } else {
             throw new InvalidArgumentException(sprintf(
                 'MessageOptions should be an array or an %s object. %s provided.',
-                MessageOptions::class,
-                is_object($messageOptions) ? get_class($messageOptions) : gettype($messageOptions)
+                MessagesOptions::class,
+                is_object($messagesOptions) ? get_class($messagesOptions) : gettype($messagesOptions)
             ));
         }
         return $this;

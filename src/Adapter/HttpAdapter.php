@@ -132,7 +132,7 @@ class HttpAdapter extends AbstractAdapter
 
         $code = Utils::$authResultCodeMap[$result->getCode()];
         //we'll give the user only general error info, to prevent user enumeration attacks
-        $message = $this->options->getMessageOptions()->getMessage($code);
+        $message = $this->options->getMessagesOptions()->getMessage($code);
         $identity = null;
 
         if ($result->isValid()) {
