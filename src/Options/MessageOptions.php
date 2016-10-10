@@ -11,6 +11,7 @@ namespace Dot\Authentication\Options;
 
 use Dot\Authentication\AuthenticationResult;
 use Zend\Stdlib\AbstractOptions;
+use Zend\Stdlib\ArrayUtils;
 
 /**
  * Class MessageOptions
@@ -41,7 +42,7 @@ class MessageOptions extends AbstractOptions
      */
     public function setMessages($messages)
     {
-        $this->messages = array_merge($this->messages, $messages);
+        $this->messages = ArrayUtils::merge($this->messages, $messages);
     }
 
     /**

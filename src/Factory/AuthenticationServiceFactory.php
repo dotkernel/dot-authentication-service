@@ -36,11 +36,11 @@ class AuthenticationServiceFactory
         $adapterConfig = $moduleOptions->getAdapter();
         $storageConfig = $moduleOptions->getStorage();
 
-        if(empty($adapterConfig)) {
+        if (empty($adapterConfig)) {
             throw new RuntimeException('No authentication adapter is set');
         }
 
-        if(empty($storageConfig)) {
+        if (empty($storageConfig)) {
             throw new RuntimeException('No authentication storage adapter is set');
         }
 

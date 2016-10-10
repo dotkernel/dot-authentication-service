@@ -29,7 +29,7 @@ class FileResolverFactory
     {
         $path = isset($options['path']) ? $options['path'] : '';
 
-        if(empty($path)) {
+        if (empty($path)) {
             throw new RuntimeException("FileResolver requires a `path` parameter to be set in config");
         }
 

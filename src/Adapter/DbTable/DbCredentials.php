@@ -39,8 +39,7 @@ class DbCredentials
         $credential,
         $identityColumn = null,
         $credentialColumn = null
-    )
-    {
+    ) {
         $this->identity = $identity;
         $this->identityColumn = $identityColumn;
         $this->credential = $credential;

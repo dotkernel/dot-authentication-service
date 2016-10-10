@@ -37,12 +37,11 @@ class SessionStorageFactory
             ? $container->get($sessionManager)
             : $sessionManager;
 
-        if(is_string($sessionManager) && class_exists($sessionManager))
-        {
+        if (is_string($sessionManager) && class_exists($sessionManager)) {
             $sessionManager = new $sessionManager;
         }
 
-        if($sessionManager && !$sessionManager instanceof SessionManager) {
+        if ($sessionManager && !$sessionManager instanceof SessionManager) {
             throw new RuntimeException('Session storage session manager invalid');
         }
 

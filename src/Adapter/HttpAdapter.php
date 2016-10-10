@@ -29,7 +29,7 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
  */
 class HttpAdapter extends AbstractAdapter
 {
-    /** @var Http  */
+    /** @var Http */
     protected $zendHttpAdapter;
 
     /** @var  AuthenticationOptions */
@@ -46,16 +46,18 @@ class HttpAdapter extends AbstractAdapter
         AuthenticationOptions $options,
         array $config,
         ResolverInterface $basicResolver = null,
-        ResolverInterface $digestResolver = null)
-    {
+        ResolverInterface $digestResolver = null
+    ) {
         $this->options = $options;
         $this->zendHttpAdapter = new Http($config);
 
-        if($basicResolver)
+        if ($basicResolver) {
             $this->zendHttpAdapter->setBasicResolver($basicResolver);
+        }
 
-        if($digestResolver)
+        if ($digestResolver) {
             $this->zendHttpAdapter->setDigestResolver($digestResolver);
+        }
     }
 
     /**
@@ -102,9 +104,10 @@ class HttpAdapter extends AbstractAdapter
     public function authenticate()
     {
         //return null if no auth info provided, consider guest
-        if($this->request &&
+        if ($this->request &&
             !$this->request->hasHeader('Authorization') &&
-            !$this->request->hasHeader('Proxy-Authorization')) {
+            !$this->request->hasHeader('Proxy-Authorization')
+        ) {
             return false;
         }
 
@@ -129,29 +132,27 @@ class HttpAdapter extends AbstractAdapter
 
         $code = Utils::$authResultCodeMap[$result->getCode()];
         //we'll give the user only general error info, to prevent user enumeration attacks
-        $message = $this->options->getMessage($code);
+        $message = $this->options->getMessageOptions()->getMessage($code);
         $identity = null;
 
-        if($result->isValid())
-        {
+        if ($result->isValid()) {
             $identity = $result->getIdentity();
             //try to convert to array if not already...
-            $identity = (array) $identity;
-            if(empty($identity)) {
+            $identity = (array)$identity;
+            if (empty($identity)) {
                 throw new RuntimeException("Missing identity object or cannot be converted to array");
             }
 
-            if($this->identityPrototype && $this->identityHydrator) {
+            if ($this->identityPrototype && $this->identityHydrator) {
                 $identity = $this->identityHydrator->hydrate($identity, $this->identityPrototype);
-                if(!$identity instanceof IdentityInterface) {
+                if (!$identity instanceof IdentityInterface) {
                     throw new RuntimeException(sprintf(
                         'Identity must be an instance of %s, "%s given"',
                         IdentityInterface::class,
                         is_object($identity) ? get_class($identity) : gettype($identity)
                     ));
                 }
-            }
-            else {
+            } else {
                 throw new RuntimeException("Missing required identity prototype and/or identity hydrator");
             }
         }

@@ -47,24 +47,24 @@ class HttpAdapterFactory
 
         $basicResolver = null;
         $digestResolver = null;
-        if(isset($resolverConfig['basic']) && is_array($resolverConfig['basic']))
-        {
-            $basicResolver = $resolverPluginManager->get($resolverConfig['basic']['name'], $resolverConfig['basic']['options']);
+        if (isset($resolverConfig['basic']) && is_array($resolverConfig['basic'])) {
+            $basicResolver = $resolverPluginManager->get($resolverConfig['basic']['name'],
+                $resolverConfig['basic']['options']);
         }
 
-        if(isset($resolverConfig['digest']) && is_array($resolverConfig['digest']))
-        {
-            $digestResolver = $resolverPluginManager->get($resolverConfig['digest']['name'], $resolverConfig['digest']['options']);
+        if (isset($resolverConfig['digest']) && is_array($resolverConfig['digest'])) {
+            $digestResolver = $resolverPluginManager->get($resolverConfig['digest']['name'],
+                $resolverConfig['digest']['options']);
         }
 
-        if(!$basicResolver && !$digestResolver) {
+        if (!$basicResolver && !$digestResolver) {
             throw new RuntimeException("At least one http resolver must be set in order to use the adapter");
         }
 
         $httpAdapter = new HttpAdapter($moduleOptions, $options, $basicResolver, $digestResolver);
         $httpAdapter->setIdentityPrototype($identityPrototype);
         $httpAdapter->setIdentityHydrator($identityHydrator);
-        
+
         return $httpAdapter;
     }
 }
