@@ -67,9 +67,9 @@ class AuthenticationService implements AuthenticationInterface
         $this->adapter->prepare($request, $response);
         $challenge = $this->adapter->challenge();
 
-        if($challenge && $challenge instanceof ResponseInterface) {
+        if ($challenge && $challenge instanceof ResponseInterface) {
             //get the WWW-authenticate header if any and add it to the current response
-            if($challenge->hasHeader('WWW-Authenticate')) {
+            if ($challenge->hasHeader('WWW-Authenticate')) {
                 $response = $response->withAddedHeader('WWW-Authenticate',
                     $challenge->getHeader('WWW-Authenticate'));
             }
@@ -89,22 +89,20 @@ class AuthenticationService implements AuthenticationInterface
         $this->request = $request;
         $this->response = $response;
 
-        if($request->getMethod() === 'OPTIONS')
+        if ($request->getMethod() === 'OPTIONS') {
             return false;
+        }
 
         $this->adapter->prepare($request, $response);
 
         $result = $this->adapter->authenticate();
 
-        if ($this->hasIdentity())
-        {
+        if ($this->hasIdentity()) {
             $this->clearIdentity();
         }
 
-        if($result)
-        {
-            if(!$result instanceof AuthenticationResult)
-            {
+        if ($result) {
+            if (!$result instanceof AuthenticationResult) {
                 throw new \RuntimeException(sprintf("Authentication adapter must return an instance of %s",
                     AuthenticationResult::class));
             }

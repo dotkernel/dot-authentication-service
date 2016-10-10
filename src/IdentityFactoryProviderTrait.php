@@ -33,7 +33,7 @@ trait IdentityFactoryProviderTrait
     public function getIdentityPrototype($identityPrototypeName)
     {
         $identityPrototype = null;
-        if(!$identityPrototypeName) {
+        if (!$identityPrototypeName) {
             throw new InvalidArgumentException("Identity prototype is required and cannot be empty");
         }
         //check if is a service name
@@ -41,16 +41,15 @@ trait IdentityFactoryProviderTrait
             ? $this->container->get($identityPrototypeName)
             : $identityPrototypeName;
 
-        if(is_string($identityPrototype))
-        {
-            if(!class_exists($identityPrototype)) {
+        if (is_string($identityPrototype)) {
+            if (!class_exists($identityPrototype)) {
                 throw new RuntimeException("Identity prototype is not a valid class name");
             }
 
             $identityPrototype = new $identityPrototype;
         }
 
-        if(!is_object($identityPrototype)) {
+        if (!is_object($identityPrototype)) {
             throw new RuntimeException("Identity prototype is not a valid object");
         }
 
@@ -65,7 +64,7 @@ trait IdentityFactoryProviderTrait
     public function getIdentityHydrator($identityHydratorName)
     {
         $identityHydrator = null;
-        if(!$identityHydratorName) {
+        if (!$identityHydratorName) {
             throw new InvalidArgumentException("Identity hydrator is required and cannot be empty");
         }
         //check if is a service name
@@ -73,16 +72,15 @@ trait IdentityFactoryProviderTrait
             ? $this->container->get($identityHydratorName)
             : $identityHydratorName;
 
-        if(is_string($identityHydrator))
-        {
-            if(!class_exists($identityHydrator)) {
+        if (is_string($identityHydrator)) {
+            if (!class_exists($identityHydrator)) {
                 throw new RuntimeException("Identity hydrator is not a valid class name");
             }
 
             $identityHydrator = new $identityHydrator;
         }
 
-        if(!$identityHydrator instanceof HydratorInterface) {
+        if (!$identityHydrator instanceof HydratorInterface) {
             throw new RuntimeException("Identity hydrator must implement " . HydratorInterface::class);
         }
 

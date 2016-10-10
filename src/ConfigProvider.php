@@ -11,8 +11,8 @@ namespace Dot\Authentication;
 
 use Dot\Authentication\Adapter\AdapterPluginManager;
 use Dot\Authentication\Factory\AdapterPluginManagerFactory;
-use Dot\Authentication\Factory\AuthenticationServiceFactory;
 use Dot\Authentication\Factory\AuthenticationOptionsFactory;
+use Dot\Authentication\Factory\AuthenticationServiceFactory;
 use Dot\Authentication\Factory\ResolverPluginManagerFactory;
 use Dot\Authentication\Factory\StoragePluginManagerFactory;
 use Dot\Authentication\Http\ResolverPluginManager;

@@ -17,7 +17,7 @@ use Zend\Authentication\Result;
  */
 final class Utils
 {
-    /** @var array  */
+    /** @var array */
     public static $authResultCodeMap = [
         Result::FAILURE => AuthenticationResult::FAILURE,
         Result::FAILURE_CREDENTIAL_INVALID => AuthenticationResult::FAILURE_INVALID_CREDENTIALS,

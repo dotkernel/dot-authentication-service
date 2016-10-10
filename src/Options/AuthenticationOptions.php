@@ -9,7 +9,7 @@
 
 namespace Dot\Authentication\Options;
 
-use Dot\Authentication\AuthenticationResult;
+use Dot\Authentication\Exception\InvalidArgumentException;
 use Zend\Stdlib\AbstractOptions;
 
 /**
@@ -29,18 +29,11 @@ class AuthenticationOptions extends AbstractOptions
 
     /** @var  string */
     protected $identityHydratorClass;
-    
-    protected $__strictMode__ = false;
 
-    /** @var array  */
-    protected $messages = [
-        AuthenticationResult::FAILURE => 'Authentication failure. Check your credentials',
-        AuthenticationResult::FAILURE_INVALID_CREDENTIALS => 'Authentication failure. Check your credentials',
-        AuthenticationResult::FAILURE_IDENTITY_AMBIGUOUS => 'Authentication failure. Check your credentials',
-        AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND => 'Authentication failure. Check your credentials',
-        AuthenticationResult::FAILURE_UNCATEGORIZED => 'Authentication failure. Check your credentials',
-        AuthenticationResult::SUCCESS => 'Welcome, you authenticated successfully'
-    ];
+    /** @var  MessageOptions */
+    protected $messageOptions;
+
+    protected $__strictMode__ = false;
 
     /**
      * @return mixed
@@ -107,30 +100,34 @@ class AuthenticationOptions extends AbstractOptions
     }
 
     /**
-     * @return mixed
+     * @return MessageOptions
      */
-    public function getMessages()
+    public function getMessageOptions()
     {
-        return $this->messages;
+        if (!$this->messageOptions) {
+            $this->setMessageOptions([]);
+        }
+        return $this->messageOptions;
     }
 
     /**
-     * @param array $messages
+     * @param MessageOptions|array $messageOptions
+     * @return AuthenticationOptions
      */
-    public function setMessages($messages)
+    public function setMessageOptions($messageOptions)
     {
-        $this->messages = array_merge($this->messages, $messages);
+        if (is_array($messageOptions)) {
+            $this->messageOptions = new MessageOptions($messageOptions);
+        } elseif ($messageOptions instanceof MessageOptions) {
+            $this->messageOptions = $messageOptions;
+        } else {
+            throw new InvalidArgumentException(sprintf(
+                'MessageOptions should be an array or an %s object. %s provided.',
+                MessageOptions::class,
+                is_object($messageOptions) ? get_class($messageOptions) : gettype($messageOptions)
+            ));
+        }
+        return $this;
     }
-
-    /**
-     * @param $key
-     * @return mixed|null
-     */
-    public function getMessage($key)
-    {
-        return isset($this->messages[$key]) ? $this->messages[$key] : null;
-    }
-
-
 
 }
