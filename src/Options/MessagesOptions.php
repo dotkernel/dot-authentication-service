@@ -29,6 +29,8 @@ class MessagesOptions extends AbstractOptions
         AuthenticationResult::SUCCESS => 'Welcome, you authenticated successfully'
     ];
 
+    protected $__strictMode__ = false;
+
     /**
      * @return mixed
      */
