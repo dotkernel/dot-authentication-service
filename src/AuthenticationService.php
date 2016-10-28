@@ -56,7 +56,7 @@ class AuthenticationService implements AuthenticationInterface
     /**
      * @param ServerRequestInterface $request
      * @param ResponseInterface $response
-     * @return static
+     * @return ResponseInterface
      */
     public function challenge(ServerRequestInterface $request, ResponseInterface $response)
     {
