@@ -12,6 +12,7 @@ namespace Dot\Authentication\Factory;
 use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Storage\SessionStorage;
 use Interop\Container\ContainerInterface;
+use Zend\Session\ManagerInterface;
 use Zend\Session\SessionManager;
 
 /**
@@ -39,6 +40,13 @@ class SessionStorageFactory
 
         if (is_string($sessionManager) && class_exists($sessionManager)) {
             $sessionManager = new $sessionManager;
+        }
+
+        //lets try to get the default session manager from the container, if it is available
+        if(!$sessionManager) {
+            if($container->has(ManagerInterface::class)) {
+                $sessionManager = $container->get(ManagerInterface::class);
+            }
         }
 
         if ($sessionManager && !$sessionManager instanceof SessionManager) {
