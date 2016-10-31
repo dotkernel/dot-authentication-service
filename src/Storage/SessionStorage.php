@@ -24,6 +24,6 @@ class SessionStorage extends Session implements StorageInterface
     {
         parent::write($contents);
         //regenerate session id, to prevent session fixation
-        $this->session->getDefaultManager()->regenerateId();
+        $this->session->getManager()->regenerateId();
     }
 }
