@@ -12,9 +12,11 @@ namespace Dot\Authentication\Factory;
 use Dot\Authentication\Adapter\HttpAdapter;
 use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Http\ResolverPluginManager;
-use Dot\Authentication\IdentityFactoryProviderTrait;
 use Dot\Authentication\Options\AuthenticationOptions;
+use Dot\Helpers\DependencyHelperTrait;
 use Interop\Container\ContainerInterface;
+use Zend\Hydrator\ClassMethods;
+use Zend\Hydrator\HydratorInterface;
 
 /**
  * Class HttpAdapterFactory
@@ -22,7 +24,7 @@ use Interop\Container\ContainerInterface;
  */
 class HttpAdapterFactory
 {
-    use IdentityFactoryProviderTrait;
+    use DependencyHelperTrait;
 
     /**
      * @param ContainerInterface $container
@@ -37,9 +39,15 @@ class HttpAdapterFactory
         /** @var AuthenticationOptions $moduleOptions */
         $moduleOptions = $container->get(AuthenticationOptions::class);
 
-        //these are trait's methods, to get objects directly or from container
-        $identityPrototype = $this->getIdentityPrototype($moduleOptions->getIdentityClass());
-        $identityHydrator = $this->getIdentityHydrator($moduleOptions->getIdentityHydratorClass());
+        //get identity and its hydrator objects, as set in config
+        $identity = $this->getDependencyObject($container, $moduleOptions->getIdentityClass());
+        if(!is_object($identity)) {
+            throw new RuntimeException('No valid identity prototype specified');
+        }
+        $hydrator = $this->getDependencyObject($container, $moduleOptions->getIdentityHydratorClass());
+        if(!$hydrator instanceof HydratorInterface) {
+            $hydrator = new ClassMethods(false);
+        }
 
         $resolverPluginManager = $container->get(ResolverPluginManager::class);
 
@@ -62,8 +70,8 @@ class HttpAdapterFactory
         }
 
         $httpAdapter = new HttpAdapter($moduleOptions, $options, $basicResolver, $digestResolver);
-        $httpAdapter->setIdentityPrototype($identityPrototype);
-        $httpAdapter->setIdentityHydrator($identityHydrator);
+        $httpAdapter->setIdentityPrototype($identity);
+        $httpAdapter->setIdentityHydrator($hydrator);
 
         return $httpAdapter;
     }

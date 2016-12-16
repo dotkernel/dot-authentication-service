@@ -11,9 +11,11 @@ namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Adapter\DbTable\CallbackCheckAdapter;
 use Dot\Authentication\Exception\RuntimeException;
-use Dot\Authentication\IdentityFactoryProviderTrait;
 use Dot\Authentication\Options\AuthenticationOptions;
+use Dot\Helpers\DependencyHelperTrait;
 use Interop\Container\ContainerInterface;
+use Zend\Hydrator\ClassMethods;
+use Zend\Hydrator\HydratorInterface;
 
 /**
  * Class CallbackCheckAdapterFactory
@@ -21,7 +23,7 @@ use Interop\Container\ContainerInterface;
  */
 class CallbackCheckAdapterFactory
 {
-    use IdentityFactoryProviderTrait;
+    use DependencyHelperTrait;
 
     /**
      * @param ContainerInterface $container
@@ -32,14 +34,18 @@ class CallbackCheckAdapterFactory
      */
     public function __invoke(ContainerInterface $container, $resolvedName, array $options = [])
     {
-        $this->container = $container;
-
         /** @var AuthenticationOptions $moduleOptions */
         $moduleOptions = $container->get(AuthenticationOptions::class);
 
         //get identity and its hydrator objects, as set in config
-        $identity = $this->getIdentityPrototype($moduleOptions->getIdentityClass());
-        $hydrator = $this->getIdentityHydrator($moduleOptions->getIdentityHydratorClass());
+        $identity = $this->getDependencyObject($container, $moduleOptions->getIdentityClass());
+        if(!is_object($identity)) {
+            throw new RuntimeException('No valid identity prototype specified');
+        }
+        $hydrator = $this->getDependencyObject($container, $moduleOptions->getIdentityHydratorClass());
+        if(!$hydrator instanceof HydratorInterface) {
+            $hydrator = new ClassMethods(false);
+        }
 
         $dbAdapter = isset($options['db_adapter']) ? $options['db_adapter'] : '';
         $tableName = isset($options['table_name']) ? $options['table_name'] : '';
@@ -68,16 +74,7 @@ class CallbackCheckAdapterFactory
             throw new RuntimeException(sprintf("CallbackCheck adapter missing table name option"));
         }
 
-        if (is_string($callbackCheck)) {
-            if ($container->has($callbackCheck)) {
-                $callbackCheck = $container->get($callbackCheck);
-            } else {
-                if (class_exists($callbackCheck)) {
-                    $callbackCheck = new $callbackCheck;
-                }
-            }
-        }
-
+        $callbackCheck = $this->getDependencyObject($container, $callbackCheck);
         if ($callbackCheck && !is_callable($callbackCheck)) {
             throw new RuntimeException("CallbackCheck adapter needs a valid callable as the credential check method");
         }
