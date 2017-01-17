@@ -50,7 +50,6 @@ class AuthenticationService implements AuthenticationInterface
     {
         $this->adapter = $adapter;
         $this->storage = $storage;
-
     }
 
     /**
@@ -70,8 +69,10 @@ class AuthenticationService implements AuthenticationInterface
         if ($challenge && $challenge instanceof ResponseInterface) {
             //get the WWW-authenticate header if any and add it to the current response
             if ($challenge->hasHeader('WWW-Authenticate')) {
-                $response = $response->withAddedHeader('WWW-Authenticate',
-                    $challenge->getHeader('WWW-Authenticate'));
+                $response = $response->withAddedHeader(
+                    'WWW-Authenticate',
+                    $challenge->getHeader('WWW-Authenticate')
+                );
             }
         }
 
@@ -103,8 +104,12 @@ class AuthenticationService implements AuthenticationInterface
 
         if ($result) {
             if (!$result instanceof AuthenticationResult) {
-                throw new \RuntimeException(sprintf("Authentication adapter must return an instance of %s",
-                    AuthenticationResult::class));
+                throw new \RuntimeException(
+                    sprintf(
+                        "Authentication adapter must return an instance of %s",
+                        AuthenticationResult::class
+                    )
+                );
             }
 
             if ($result->isValid()) {
@@ -124,14 +129,11 @@ class AuthenticationService implements AuthenticationInterface
     }
 
     /**
-     * @return mixed|null
+     * @return void
      */
-    public function getIdentity()
+    public function clearIdentity()
     {
-        if ($this->storage->isEmpty()) {
-            return null;
-        }
-        return $this->storage->read();
+        $this->storage->clear();
     }
 
     /**
@@ -145,10 +147,13 @@ class AuthenticationService implements AuthenticationInterface
     }
 
     /**
-     * @return void
+     * @return mixed|null
      */
-    public function clearIdentity()
+    public function getIdentity()
     {
-        $this->storage->clear();
+        if ($this->storage->isEmpty()) {
+            return null;
+        }
+        return $this->storage->read();
     }
 }

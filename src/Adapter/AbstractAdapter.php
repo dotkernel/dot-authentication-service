@@ -102,5 +102,4 @@ abstract class AbstractAdapter implements AdapterInterface
         $this->identityHydrator = $identityHydrator;
         return $this;
     }
-
 }

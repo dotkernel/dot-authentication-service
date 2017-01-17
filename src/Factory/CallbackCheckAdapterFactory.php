@@ -39,11 +39,11 @@ class CallbackCheckAdapterFactory
 
         //get identity and its hydrator objects, as set in config
         $identity = $this->getDependencyObject($container, $moduleOptions->getIdentityClass());
-        if(!is_object($identity)) {
+        if (!is_object($identity)) {
             throw new RuntimeException('No valid identity prototype specified');
         }
         $hydrator = $this->getDependencyObject($container, $moduleOptions->getIdentityHydratorClass());
-        if(!$hydrator instanceof HydratorInterface) {
+        if (!$hydrator instanceof HydratorInterface) {
             $hydrator = new ClassMethods(false);
         }
 
@@ -56,7 +56,9 @@ class CallbackCheckAdapterFactory
         }
 
         if (!is_array($identityColumns)) {
-            throw new RuntimeException("CallbackCheck adapter identity columns must be a string or an array of strings");
+            throw new RuntimeException(
+                "CallbackCheck adapter identity columns must be a string or an array of strings"
+            );
         }
 
         $credentialColumn = isset($options['credential_column']) ? $options['credential_column'] : null;
@@ -82,7 +84,13 @@ class CallbackCheckAdapterFactory
         $db = $container->get($dbAdapter);
 
         $adapter = new CallbackCheckAdapter(
-            $moduleOptions, $db, $tableName, $identityColumns, $credentialColumn, $callbackCheck);
+            $moduleOptions,
+            $db,
+            $tableName,
+            $identityColumns,
+            $credentialColumn,
+            $callbackCheck
+        );
 
         $adapter->setIdentityPrototype($identity);
         $adapter->setIdentityHydrator($hydrator);

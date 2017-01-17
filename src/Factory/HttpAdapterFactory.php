@@ -41,11 +41,11 @@ class HttpAdapterFactory
 
         //get identity and its hydrator objects, as set in config
         $identity = $this->getDependencyObject($container, $moduleOptions->getIdentityClass());
-        if(!is_object($identity)) {
+        if (!is_object($identity)) {
             throw new RuntimeException('No valid identity prototype specified');
         }
         $hydrator = $this->getDependencyObject($container, $moduleOptions->getIdentityHydratorClass());
-        if(!$hydrator instanceof HydratorInterface) {
+        if (!$hydrator instanceof HydratorInterface) {
             $hydrator = new ClassMethods(false);
         }
 
@@ -56,13 +56,17 @@ class HttpAdapterFactory
         $basicResolver = null;
         $digestResolver = null;
         if (isset($resolverConfig['basic']) && is_array($resolverConfig['basic'])) {
-            $basicResolver = $resolverPluginManager->get($resolverConfig['basic']['name'],
-                $resolverConfig['basic']['options']);
+            $basicResolver = $resolverPluginManager->get(
+                $resolverConfig['basic']['name'],
+                $resolverConfig['basic']['options']
+            );
         }
 
         if (isset($resolverConfig['digest']) && is_array($resolverConfig['digest'])) {
-            $digestResolver = $resolverPluginManager->get($resolverConfig['digest']['name'],
-                $resolverConfig['digest']['options']);
+            $digestResolver = $resolverPluginManager->get(
+                $resolverConfig['digest']['name'],
+                $resolverConfig['digest']['options']
+            );
         }
 
         if (!$basicResolver && !$digestResolver) {
