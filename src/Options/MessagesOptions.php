@@ -8,7 +8,6 @@
 
 namespace Dot\Authentication\Options;
 
-
 use Dot\Authentication\AuthenticationResult;
 use Zend\Stdlib\AbstractOptions;
 use Zend\Stdlib\ArrayUtils;

@@ -43,8 +43,8 @@ class SessionStorageFactory
         }
 
         //lets try to get the default session manager from the container, if it is available
-        if(!$sessionManager) {
-            if($container->has(ManagerInterface::class)) {
+        if (!$sessionManager) {
+            if ($container->has(ManagerInterface::class)) {
                 $sessionManager = $container->get(ManagerInterface::class);
             }
         }

@@ -90,8 +90,12 @@ class CallbackCheckAdapter extends AbstractAdapter
 
         $this->credentials = $request->getAttribute(DbCredentials::class, null);
         if ($this->credentials && !$this->credentials instanceof DbCredentials) {
-            throw new RuntimeException(sprintf("CallbackCheck adapter needs credentials to be provided as an instance of %s",
-                DbCredentials::class));
+            throw new RuntimeException(
+                sprintf(
+                    "CallbackCheck adapter needs credentials to be provided as an instance of %s",
+                    DbCredentials::class
+                )
+            );
         }
     }
 
@@ -125,7 +129,8 @@ class CallbackCheckAdapter extends AbstractAdapter
 
             if (empty($identityColumns) || $credentialColumn === null) {
                 throw new RuntimeException(
-                    "CallbackCheck adapter requires at least one identity column name and credential column");
+                    "CallbackCheck adapter requires at least one identity column name and credential column"
+                );
             }
 
             //go over the identities and stop if one is found
