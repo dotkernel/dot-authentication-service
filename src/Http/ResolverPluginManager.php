@@ -25,4 +25,12 @@ class ResolverPluginManager extends AbstractPluginManager
     protected $factories = [
         FileResolver::class => FileResolverFactory::class,
     ];
+
+    protected $aliases = [
+        'file' => FileResolver::class,
+        'File' => FileResolver::class,
+        'fileresolver' => FileResolver::class,
+        'fileResolver' => FileResolver::class,
+        'FileResolver' => FileResolver::class,
+    ];
 }

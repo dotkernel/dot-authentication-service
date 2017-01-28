@@ -40,11 +40,11 @@ class HttpAdapterFactory
         $moduleOptions = $container->get(AuthenticationOptions::class);
 
         //get identity and its hydrator objects, as set in config
-        $identity = $this->getDependencyObject($container, $moduleOptions->getIdentityClass());
+        $identity = $this->getDependencyObject($container, $moduleOptions->getIdentityPrototype());
         if (!is_object($identity)) {
             throw new RuntimeException('No valid identity prototype specified');
         }
-        $hydrator = $this->getDependencyObject($container, $moduleOptions->getIdentityHydratorClass());
+        $hydrator = $this->getDependencyObject($container, $moduleOptions->getIdentityHydrator());
         if (!$hydrator instanceof HydratorInterface) {
             $hydrator = new ClassMethods(false);
         }

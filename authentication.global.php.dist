@@ -4,19 +4,20 @@ return [
     'dot_authentication' => [
         //required by the auth adapters, it may be optional for your custom adapters
         //specify the identity entity to use and its hydrator
-        'identity_class' => '\You\Identity\Class\Implementing\IdentityInterface',
-        'identity_hydrator_class' => 'Hydrator\Class\Implementing\HydratorInterface',
 
         //this is adapter specific
         //currently we support HTTP basic and digest
         //below is config template for callbackcheck adapter
         'adapter' => [
-            \Dot\Authentication\Adapter\DbTable\CallbackCheckAdapter::class => [
+            'CallbackCheck' => [
                 // zend db adapter service name
-                'db_adapter' => 'database service name',
+                'adapter' => 'database service name',
+
+                'identity_prototype' => '\You\Identity\Class\Implementing\IdentityInterface',
+                'identity_hydrator' => 'Hydrator\Class\Implementing\HydratorInterface',
 
                 // your user table name
-                'table_name' => 'user table name',
+                'table' => 'user table name',
 
                 // what user fields should use for authentication(db fields)
                 'identity_columns' => ['username', 'email'],
@@ -35,13 +36,16 @@ return [
         //this is a HTTP basic adapter config example
         /*
         'adapter' => [
-            \Dot\Authentication\Adapter\HttpAdapter::class => [
+            'Http' => [
+                'identity_prototype' => '\You\Identity\Class\Implementing\IdentityInterface',
+                'identity_hydrator' => 'Hydrator\Class\Implementing\HydratorInterface',
+
                 'accept_schemes' => 'basic',
                 'realm' => 'api',
                 'resolvers' => [
                     'basic' => [
                         //name must be registered in the resolver manager
-                        'name' => \Zend\Authentication\Adapter\Http\FileResolver::class,
+                        'name' => 'FileResolver',
                         'options' => [
                             'path' => 'path/to/.httpasswd',
                         ]
@@ -53,7 +57,7 @@ return [
 
         //storage specific options, example below, for session storage
         'storage' => [
-            \Dot\Authentication\Storage\SessionStorage::class => [
+            'Session' => [
                 //session namespace
                 'namespace' => 'dot_auth',
 
@@ -77,7 +81,12 @@ return [
         //custom messages, to overwrite for example the default authentication results messages
         'messages_options' => [
             'messages' => [
-
+                //AuthenticationResult::FAILURE => 'Authentication failure. Check your credentials',
+                //AuthenticationResult::FAILURE_INVALID_CREDENTIALS => 'Authentication failure. Check your credentials',
+                //AuthenticationResult::FAILURE_IDENTITY_AMBIGUOUS => 'Authentication failure. Check your credentials',
+                //AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND => 'Authentication failure. Check your credentials',
+                //AuthenticationResult::FAILURE_UNCATEGORIZED => 'Authentication failure. Check your credentials',
+                //AuthenticationResult::SUCCESS => 'Welcome, you authenticated successfully'
             ],
         ],
     ]

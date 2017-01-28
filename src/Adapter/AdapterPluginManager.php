@@ -27,4 +27,19 @@ class AdapterPluginManager extends AbstractPluginManager
         CallbackCheckAdapter::class => CallbackCheckAdapterFactory::class,
         HttpAdapter::class => HttpAdapterFactory::class,
     ];
+
+    protected $aliases = [
+        'callbackcheck' => CallbackCheckAdapter::class,
+        'callbackCheck' => CallbackCheckAdapter::class,
+        'CallbackCheck' => CallbackCheckAdapter::class,
+        'callbackcheckadapter' => CallbackCheckAdapter::class,
+        'callbackCheckAdapter' => CallbackCheckAdapter::class,
+        'CallbackCheckAdapter' => CallbackCheckAdapter::class,
+
+        'http' => HttpAdapter::class,
+        'Http' => HttpAdapter::class,
+        'httpadapter' => HttpAdapter::class,
+        'httpAdapter' => HttpAdapter::class,
+        'HttpAdapter' => HttpAdapter::class,
+    ];
 }

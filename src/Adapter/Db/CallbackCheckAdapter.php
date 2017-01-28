@@ -7,7 +7,7 @@
  * Time: 12:37 AM
  */
 
-namespace Dot\Authentication\Adapter\DbTable;
+namespace Dot\Authentication\Adapter\Db;
 
 use Dot\Authentication\Adapter\AbstractAdapter;
 use Dot\Authentication\AuthenticationResult;
@@ -22,7 +22,7 @@ use Zend\Db\Adapter\Adapter;
 
 /**
  * Class CallbackCheckAdapter
- * @package Dot\Authentication\Adapter\DbTable
+ * @package Dot\Authentication\Adapter\Db
  */
 class CallbackCheckAdapter extends AbstractAdapter
 {

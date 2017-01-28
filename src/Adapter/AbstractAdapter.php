@@ -9,8 +9,12 @@
 
 namespace Dot\Authentication\Adapter;
 
+use Dot\Authentication\Exception\InvalidArgumentException;
+use Dot\Authentication\Identity\IdentityInterface;
+use Dot\Authentication\Options\AuthenticationOptions;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Hydrator\ClassMethods;
 use Zend\Hydrator\HydratorInterface;
 
 /**
@@ -25,16 +29,44 @@ abstract class AbstractAdapter implements AdapterInterface
     /** @var  ResponseInterface */
     protected $response;
 
-    /** @var  object */
+    /** @var  IdentityInterface */
     protected $identityPrototype;
 
     /** @var  HydratorInterface */
     protected $identityHydrator;
 
+    /** @var  AuthenticationOptions */
+    protected $authenticationOptions;
+
+    /**
+     * AbstractAdapter constructor.
+     * @param array $options
+     */
+    public function __construct(array $options = [])
+    {
+        if (isset($options['identity_prototype']) && $options['identity_prototype'] instanceof IdentityInterface) {
+            $this->setIdentityPrototype($options['identity_prototype']);
+        }
+
+        if (isset($options['identity_hydrator']) && $options['identity_hydrator'] instanceof HydratorInterface) {
+            $this->setIdentityHydrator($options['identity_hydrator']);
+        }
+
+        if (isset($options['authentication_options'])
+            && $options['authentication_options'] instanceof AuthenticationOptions) {
+            $this->setAuthenticationOptions($options['authentication_options']);
+        }
+
+        if (! $this->identityPrototype instanceof IdentityInterface) {
+            throw new InvalidArgumentException('Identity prototype is required and must be an instance of ' .
+                IdentityInterface::class);
+        }
+    }
+
     /**
      * @return ServerRequestInterface
      */
-    public function getRequest()
+    public function getRequest() : ServerRequestInterface
     {
         return $this->request;
     }
@@ -43,7 +75,7 @@ abstract class AbstractAdapter implements AdapterInterface
      * @param ServerRequestInterface $request
      * @return AbstractAdapter
      */
-    public function setRequest($request)
+    public function setRequest(ServerRequestInterface $request) : AbstractAdapter
     {
         $this->request = $request;
         return $this;
@@ -52,7 +84,7 @@ abstract class AbstractAdapter implements AdapterInterface
     /**
      * @return ResponseInterface
      */
-    public function getResponse()
+    public function getResponse() : ResponseInterface
     {
         return $this->response;
     }
@@ -61,25 +93,25 @@ abstract class AbstractAdapter implements AdapterInterface
      * @param ResponseInterface $response
      * @return AbstractAdapter
      */
-    public function setResponse($response)
+    public function setResponse(ResponseInterface $response) : AbstractAdapter
     {
         $this->response = $response;
         return $this;
     }
 
     /**
-     * @return object
+     * @return IdentityInterface
      */
-    public function getIdentityPrototype()
+    public function getIdentityPrototype() : IdentityInterface
     {
         return $this->identityPrototype;
     }
 
     /**
-     * @param object $identityPrototype
+     * @param IdentityInterface $identityPrototype
      * @return AbstractAdapter
      */
-    public function setIdentityPrototype($identityPrototype)
+    public function setIdentityPrototype(IdentityInterface $identityPrototype) : AbstractAdapter
     {
         $this->identityPrototype = $identityPrototype;
         return $this;
@@ -88,8 +120,11 @@ abstract class AbstractAdapter implements AdapterInterface
     /**
      * @return HydratorInterface
      */
-    public function getIdentityHydrator()
+    public function getIdentityHydrator() : HydratorInterface
     {
+        if (! $this->identityHydrator instanceof HydratorInterface) {
+            $this->identityHydrator = new ClassMethods(false);
+        }
         return $this->identityHydrator;
     }
 
@@ -97,9 +132,30 @@ abstract class AbstractAdapter implements AdapterInterface
      * @param HydratorInterface $identityHydrator
      * @return AbstractAdapter
      */
-    public function setIdentityHydrator($identityHydrator)
+    public function setIdentityHydrator(HydratorInterface $identityHydrator) : AbstractAdapter
     {
         $this->identityHydrator = $identityHydrator;
+        return $this;
+    }
+
+    /**
+     * @return AuthenticationOptions
+     */
+    public function getAuthenticationOptions(): AuthenticationOptions
+    {
+        if (! $this->authenticationOptions) {
+            $this->authenticationOptions = new AuthenticationOptions([]);
+        }
+        return $this->authenticationOptions;
+    }
+
+    /**
+     * @param AuthenticationOptions $authenticationOptions
+     * @return AbstractAdapter
+     */
+    public function setAuthenticationOptions(AuthenticationOptions $authenticationOptions): AbstractAdapter
+    {
+        $this->authenticationOptions = $authenticationOptions;
         return $this;
     }
 }

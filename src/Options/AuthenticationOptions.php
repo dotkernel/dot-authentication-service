@@ -25,10 +25,10 @@ class AuthenticationOptions extends AbstractOptions
     protected $storage;
 
     /** @var  string */
-    protected $identityClass;
+    protected $identityPrototype;
 
     /** @var  string */
-    protected $identityHydratorClass;
+    protected $identityHydrator;
 
     /** @var  MessagesOptions */
     protected $messagesOptions;
@@ -70,33 +70,33 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return string
      */
-    public function getIdentityClass()
+    public function getIdentityPrototype()
     {
-        return $this->identityClass;
+        return $this->identityPrototype;
     }
 
     /**
-     * @param string $identityClass
+     * @param string $identityPrototype
      */
-    public function setIdentityClass($identityClass)
+    public function setIdentityPrototype($identityPrototype)
     {
-        $this->identityClass = $identityClass;
+        $this->identityPrototype = $identityPrototype;
     }
 
     /**
      * @return string
      */
-    public function getIdentityHydratorClass()
+    public function getIdentityHydrator()
     {
-        return $this->identityHydratorClass;
+        return $this->identityHydrator;
     }
 
     /**
-     * @param string $identityHydratorClass
+     * @param string $identityHydrator
      */
-    public function setIdentityHydratorClass($identityHydratorClass)
+    public function setIdentityHydrator($identityHydrator)
     {
-        $this->identityHydratorClass = $identityHydratorClass;
+        $this->identityHydrator = $identityHydrator;
     }
 
     /**

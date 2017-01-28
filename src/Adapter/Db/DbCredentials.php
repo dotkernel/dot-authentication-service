@@ -7,11 +7,11 @@
  * Time: 12:37 AM
  */
 
-namespace Dot\Authentication\Adapter\DbTable;
+namespace Dot\Authentication\Adapter\Db;
 
 /**
  * Class DbCredentials
- * @package Dot\Authentication\Adapter\DbTable
+ * @package Dot\Authentication\Adapter\Db
  */
 class DbCredentials
 {

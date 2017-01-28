@@ -23,11 +23,11 @@ class SessionStorageFactory
 {
     /**
      * @param ContainerInterface $container
-     * @param $resolvedName
+     * @param $requestedName
      * @param array $options
      * @return SessionStorage
      */
-    public function __invoke(ContainerInterface $container, $resolvedName, array $options = [])
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = [])
     {
         $namespace = isset($options['namespace']) ? $options['namespace'] : null;
         $member = isset($options['member']) ? $options['member'] : null;
