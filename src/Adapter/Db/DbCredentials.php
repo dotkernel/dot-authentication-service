@@ -7,6 +7,8 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types=1);
+
 namespace Dot\Authentication\Adapter\Db;
 
 /**
@@ -31,14 +33,14 @@ class DbCredentials
      * DbCredentials constructor.
      * @param string $identity
      * @param string $credential
-     * @param null|string $identityColumn
-     * @param null|string $credentialColumn
+     * @param string $identityColumn
+     * @param string $credentialColumn
      */
     public function __construct(
-        $identity,
-        $credential,
-        $identityColumn = null,
-        $credentialColumn = null
+        string $identity,
+        string $credential,
+        string $identityColumn = '',
+        string $credentialColumn = ''
     ) {
         $this->identity = $identity;
         $this->identityColumn = $identityColumn;
@@ -49,32 +51,64 @@ class DbCredentials
     /**
      * @return string
      */
-    public function getIdentity()
+    public function getIdentity(): string
     {
         return $this->identity;
     }
 
     /**
-     * @return null|string
+     * @param string $identity
      */
-    public function getIdentityColumn()
+    public function setIdentity(string $identity)
     {
-        return $this->identityColumn;
+        $this->identity = $identity;
     }
 
     /**
      * @return string
      */
-    public function getCredential()
+    public function getIdentityColumn(): string
+    {
+        return $this->identityColumn;
+    }
+
+    /**
+     * @param string $identityColumn
+     */
+    public function setIdentityColumn(string $identityColumn)
+    {
+        $this->identityColumn = $identityColumn;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCredential(): string
     {
         return $this->credential;
     }
 
     /**
-     * @return null|string
+     * @param string $credential
      */
-    public function getCredentialColumn()
+    public function setCredential(string $credential)
+    {
+        $this->credential = $credential;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCredentialColumn(): string
     {
         return $this->credentialColumn;
+    }
+
+    /**
+     * @param string $credentialColumn
+     */
+    public function setCredentialColumn(string $credentialColumn)
+    {
+        $this->credentialColumn = $credentialColumn;
     }
 }

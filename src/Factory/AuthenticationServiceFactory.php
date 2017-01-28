@@ -24,17 +24,18 @@ class AuthenticationServiceFactory
 {
     /**
      * @param ContainerInterface $container
+     * @param string $requestedName
      * @return AuthenticationService
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName)
     {
-        $moduleOptions = $container->get(AuthenticationOptions::class);
+        $authenticationOptions = $container->get(AuthenticationOptions::class);
 
         $adapterPluginManager = $container->get(AdapterPluginManager::class);
         $storagePluginManager = $container->get(StoragePluginManager::class);
 
-        $adapterConfig = $moduleOptions->getAdapter();
-        $storageConfig = $moduleOptions->getStorage();
+        $adapterConfig = $authenticationOptions->getAdapter();
+        $storageConfig = $authenticationOptions->getStorage();
 
         if (empty($adapterConfig)) {
             throw new RuntimeException('No authentication adapter is set');

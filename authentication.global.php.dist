@@ -9,7 +9,8 @@ return [
         //currently we support HTTP basic and digest
         //below is config template for callbackcheck adapter
         'adapter' => [
-            'CallbackCheck' => [
+            'type' => 'CallbackCheck',
+            'options' => [
                 // zend db adapter service name
                 'adapter' => 'database service name',
 
@@ -36,28 +37,32 @@ return [
         //this is a HTTP basic adapter config example
         /*
         'adapter' => [
-            'Http' => [
+            'type' => 'Http',
+            'options' => [
                 'identity_prototype' => '\You\Identity\Class\Implementing\IdentityInterface',
                 'identity_hydrator' => 'Hydrator\Class\Implementing\HydratorInterface',
 
-                'accept_schemes' => 'basic',
-                'realm' => 'api',
-                'resolvers' => [
-                    'basic' => [
-                        //name must be registered in the resolver manager
-                        'name' => 'FileResolver',
-                        'options' => [
-                            'path' => 'path/to/.httpasswd',
-                        ]
-                    ]
-                ]
+                'config' => [
+                    'accept_schemes' => 'basic',
+                    'realm' => 'api',
+                ],
+
+                'basic_resolver' => [
+                    'name' => 'FileResolver',
+                    'options' => [
+                        'path' => 'path/to/.httpasswd',
+                    ],
+                ],
+
+                'digest_resolver' => [],
             ],
         ],
         */
 
         //storage specific options, example below, for session storage
         'storage' => [
-            'Session' => [
+            'type' => 'Session',
+            'options' => [
                 //session namespace
                 'namespace' => 'dot_auth',
 
@@ -86,6 +91,7 @@ return [
                 //AuthenticationResult::FAILURE_IDENTITY_AMBIGUOUS => 'Authentication failure. Check your credentials',
                 //AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND => 'Authentication failure. Check your credentials',
                 //AuthenticationResult::FAILURE_UNCATEGORIZED => 'Authentication failure. Check your credentials',
+                //AuthenticationResult::FAILURE_MISSING_CREDENTIALS => 'Authentication failure. Missing credentials',
                 //AuthenticationResult::SUCCESS => 'Welcome, you authenticated successfully'
             ],
         ],

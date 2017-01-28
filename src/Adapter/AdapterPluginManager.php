@@ -7,9 +7,11 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types=1);
+
 namespace Dot\Authentication\Adapter;
 
-use Dot\Authentication\Adapter\DbTable\CallbackCheckAdapter;
+use Dot\Authentication\Adapter\Db\CallbackCheckAdapter;
 use Dot\Authentication\Factory\CallbackCheckAdapterFactory;
 use Dot\Authentication\Factory\HttpAdapterFactory;
 use Zend\ServiceManager\AbstractPluginManager;

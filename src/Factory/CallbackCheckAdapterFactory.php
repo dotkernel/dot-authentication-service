@@ -7,24 +7,20 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types=1);
+
 namespace Dot\Authentication\Factory;
 
-use Dot\Authentication\Adapter\DbTable\CallbackCheckAdapter;
+use Dot\Authentication\Adapter\Db\CallbackCheckAdapter;
 use Dot\Authentication\Exception\RuntimeException;
-use Dot\Authentication\Options\AuthenticationOptions;
-use Dot\Helpers\DependencyHelperTrait;
 use Interop\Container\ContainerInterface;
-use Zend\Hydrator\ClassMethods;
-use Zend\Hydrator\HydratorInterface;
 
 /**
  * Class CallbackCheckAdapterFactory
  * @package Dot\Authentication\Factory
  */
-class CallbackCheckAdapterFactory
+class CallbackCheckAdapterFactory extends AbstractAdapterFactory
 {
-    use DependencyHelperTrait;
-
     /**
      * @param ContainerInterface $container
      * @param $resolvedName
@@ -34,19 +30,6 @@ class CallbackCheckAdapterFactory
      */
     public function __invoke(ContainerInterface $container, $resolvedName, array $options = [])
     {
-        /** @var AuthenticationOptions $moduleOptions */
-        $moduleOptions = $container->get(AuthenticationOptions::class);
-
-        //get identity and its hydrator objects, as set in config
-        $identity = $this->getDependencyObject($container, $moduleOptions->getIdentityPrototype());
-        if (!is_object($identity)) {
-            throw new RuntimeException('No valid identity prototype specified');
-        }
-        $hydrator = $this->getDependencyObject($container, $moduleOptions->getIdentityHydrator());
-        if (!$hydrator instanceof HydratorInterface) {
-            $hydrator = new ClassMethods(false);
-        }
-
         $dbAdapter = isset($options['db_adapter']) ? $options['db_adapter'] : '';
         $tableName = isset($options['table_name']) ? $options['table_name'] : '';
 
@@ -96,5 +79,9 @@ class CallbackCheckAdapterFactory
         $adapter->setIdentityHydrator($hydrator);
 
         return $adapter;
+    }
+
+    public function processOptions(&$options) {
+
     }
 }

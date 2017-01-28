@@ -7,9 +7,10 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types=1);
+
 namespace Dot\Authentication\Options;
 
-use Dot\Authentication\Exception\InvalidArgumentException;
 use Zend\Stdlib\AbstractOptions;
 
 /**
@@ -18,10 +19,10 @@ use Zend\Stdlib\AbstractOptions;
  */
 class AuthenticationOptions extends AbstractOptions
 {
-    /** @var  array|mixed */
+    /** @var  array */
     protected $adapter;
 
-    /** @var  mixed */
+    /** @var  array */
     protected $storage;
 
     /** @var  string */
@@ -33,36 +34,44 @@ class AuthenticationOptions extends AbstractOptions
     /** @var  MessagesOptions */
     protected $messagesOptions;
 
-    protected $__strictMode__ = false;
+    /**
+     * AuthenticationOptions constructor.
+     * @param null $options
+     */
+    public function __construct($options = null)
+    {
+        $this->__strictMode__ = false;
+        parent::__construct($options);
+    }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getAdapter()
+    public function getAdapter() : array
     {
         return $this->adapter;
     }
 
     /**
-     * @param mixed $adapter
+     * @param array $adapter
      */
-    public function setAdapter($adapter)
+    public function setAdapter(array $adapter)
     {
         $this->adapter = $adapter;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getStorage()
+    public function getStorage() : array
     {
         return $this->storage;
     }
 
     /**
-     * @param mixed $storage
+     * @param array $storage
      */
-    public function setStorage($storage)
+    public function setStorage(array $storage)
     {
         $this->storage = $storage;
     }
@@ -70,7 +79,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return string
      */
-    public function getIdentityPrototype()
+    public function getIdentityPrototype() : string
     {
         return $this->identityPrototype;
     }
@@ -78,7 +87,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @param string $identityPrototype
      */
-    public function setIdentityPrototype($identityPrototype)
+    public function setIdentityPrototype(string $identityPrototype)
     {
         $this->identityPrototype = $identityPrototype;
     }
@@ -86,7 +95,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return string
      */
-    public function getIdentityHydrator()
+    public function getIdentityHydrator() : string
     {
         return $this->identityHydrator;
     }
@@ -94,7 +103,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @param string $identityHydrator
      */
-    public function setIdentityHydrator($identityHydrator)
+    public function setIdentityHydrator(string $identityHydrator)
     {
         $this->identityHydrator = $identityHydrator;
     }
@@ -102,7 +111,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return MessagesOptions
      */
-    public function getMessagesOptions()
+    public function getMessagesOptions() : MessagesOptions
     {
         if (!$this->messagesOptions) {
             $this->setMessagesOptions([]);
@@ -111,22 +120,10 @@ class AuthenticationOptions extends AbstractOptions
     }
 
     /**
-     * @param MessagesOptions|array $messagesOptions
-     * @return AuthenticationOptions
+     * @param array $messagesOptions
      */
-    public function setMessagesOptions($messagesOptions)
+    public function setMessagesOptions(array $messagesOptions)
     {
-        if (is_array($messagesOptions)) {
-            $this->messagesOptions = new MessagesOptions($messagesOptions);
-        } elseif ($messagesOptions instanceof MessagesOptions) {
-            $this->messagesOptions = $messagesOptions;
-        } else {
-            throw new InvalidArgumentException(sprintf(
-                'MessageOptions should be an array or an %s object. %s provided.',
-                MessagesOptions::class,
-                is_object($messagesOptions) ? get_class($messagesOptions) : gettype($messagesOptions)
-            ));
-        }
-        return $this;
+        $this->messagesOptions = new MessagesOptions($messagesOptions);
     }
 }

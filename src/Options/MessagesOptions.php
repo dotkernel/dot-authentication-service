@@ -6,6 +6,8 @@
  * Time: 7:01 PM
  */
 
+declare(strict_types=1);
+
 namespace Dot\Authentication\Options;
 
 use Dot\Authentication\AuthenticationResult;
@@ -25,15 +27,20 @@ class MessagesOptions extends AbstractOptions
         AuthenticationResult::FAILURE_IDENTITY_AMBIGUOUS => 'Authentication failure. Check your credentials',
         AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND => 'Authentication failure. Check your credentials',
         AuthenticationResult::FAILURE_UNCATEGORIZED => 'Authentication failure. Check your credentials',
+        AuthenticationResult::FAILURE_MISSING_CREDENTIALS => 'Authentication failure. Missing credentials',
         AuthenticationResult::SUCCESS => 'Welcome, you authenticated successfully'
     ];
 
-    protected $__strictMode__ = false;
+    public function __construct($options = null)
+    {
+        $this->__strictMode__ = false;
+        parent::__construct($options);
+    }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getMessages()
+    public function getMessages() : array
     {
         return $this->messages;
     }
@@ -41,17 +48,17 @@ class MessagesOptions extends AbstractOptions
     /**
      * @param array $messages
      */
-    public function setMessages($messages)
+    public function setMessages(array $messages)
     {
         $this->messages = ArrayUtils::merge($this->messages, $messages);
     }
 
     /**
-     * @param $key
-     * @return mixed|null
+     * @param int $key
+     * @return string
      */
-    public function getMessage($key)
+    public function getMessage(int $key) : string
     {
-        return isset($this->messages[$key]) ? $this->messages[$key] : null;
+        return isset($this->messages[$key]) ? $this->messages[$key] : '';
     }
 }
