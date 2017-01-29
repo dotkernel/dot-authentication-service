@@ -7,7 +7,7 @@
  * Time: 12:37 AM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Options;
 
@@ -47,7 +47,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return array
      */
-    public function getAdapter() : array
+    public function getAdapter(): array
     {
         return $this->adapter;
     }
@@ -63,7 +63,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return array
      */
-    public function getStorage() : array
+    public function getStorage(): array
     {
         return $this->storage;
     }
@@ -79,7 +79,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return string
      */
-    public function getIdentityPrototype() : string
+    public function getIdentityPrototype(): string
     {
         return $this->identityPrototype;
     }
@@ -95,7 +95,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return string
      */
-    public function getIdentityHydrator() : string
+    public function getIdentityHydrator(): string
     {
         return $this->identityHydrator;
     }
@@ -111,7 +111,7 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return MessagesOptions
      */
-    public function getMessagesOptions() : MessagesOptions
+    public function getMessagesOptions(): MessagesOptions
     {
         if (!$this->messagesOptions) {
             $this->setMessagesOptions([]);

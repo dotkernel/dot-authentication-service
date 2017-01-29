@@ -7,7 +7,7 @@
  * Time: 12:37 AM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Factory;
 
@@ -39,7 +39,7 @@ class SessionStorageFactory
         }
 
         //lets try to get the default session manager from the container, if it is available
-        if (! $options['session_manager'] instanceof ManagerInterface) {
+        if (!$options['session_manager'] instanceof ManagerInterface) {
             if ($container->has(ManagerInterface::class)) {
                 $options['session_manager'] = $container->get(ManagerInterface::class);
             }

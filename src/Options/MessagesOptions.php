@@ -6,7 +6,7 @@
  * Time: 7:01 PM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Options;
 
@@ -40,7 +40,7 @@ class MessagesOptions extends AbstractOptions
     /**
      * @return array
      */
-    public function getMessages() : array
+    public function getMessages(): array
     {
         return $this->messages;
     }
@@ -57,7 +57,7 @@ class MessagesOptions extends AbstractOptions
      * @param int $key
      * @return string
      */
-    public function getMessage(int $key) : string
+    public function getMessage(int $key): string
     {
         return isset($this->messages[$key]) ? $this->messages[$key] : '';
     }

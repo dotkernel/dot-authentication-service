@@ -7,7 +7,7 @@
  * Time: 12:37 AM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Adapter;
 
@@ -52,11 +52,12 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         if (isset($options['authentication_options'])
-            && $options['authentication_options'] instanceof AuthenticationOptions) {
+            && $options['authentication_options'] instanceof AuthenticationOptions
+        ) {
             $this->setAuthenticationOptions($options['authentication_options']);
         }
 
-        if (! $this->identityPrototype instanceof IdentityInterface) {
+        if (!$this->identityPrototype instanceof IdentityInterface) {
             throw new InvalidArgumentException('Identity prototype is required and must be an instance of ' .
                 IdentityInterface::class);
         }
@@ -65,7 +66,7 @@ abstract class AbstractAdapter implements AdapterInterface
     /**
      * @return ServerRequestInterface
      */
-    public function getRequest() : ?ServerRequestInterface
+    public function getRequest(): ?ServerRequestInterface
     {
         return $this->request;
     }
@@ -79,46 +80,11 @@ abstract class AbstractAdapter implements AdapterInterface
     }
 
     /**
-     * @return IdentityInterface
-     */
-    public function getIdentityPrototype() : IdentityInterface
-    {
-        return $this->identityPrototype;
-    }
-
-    /**
-     * @param IdentityInterface $identityPrototype
-     */
-    public function setIdentityPrototype(IdentityInterface $identityPrototype)
-    {
-        $this->identityPrototype = $identityPrototype;
-    }
-
-    /**
-     * @return HydratorInterface
-     */
-    public function getIdentityHydrator() : HydratorInterface
-    {
-        if (! $this->identityHydrator instanceof HydratorInterface) {
-            $this->identityHydrator = new ClassMethods(false);
-        }
-        return $this->identityHydrator;
-    }
-
-    /**
-     * @param HydratorInterface $identityHydrator
-     */
-    public function setIdentityHydrator(HydratorInterface $identityHydrator)
-    {
-        $this->identityHydrator = $identityHydrator;
-    }
-
-    /**
      * @return AuthenticationOptions
      */
     public function getAuthenticationOptions(): AuthenticationOptions
     {
-        if (! $this->authenticationOptions) {
+        if (!$this->authenticationOptions) {
             $this->authenticationOptions = new AuthenticationOptions([]);
         }
         return $this->authenticationOptions;
@@ -136,7 +102,7 @@ abstract class AbstractAdapter implements AdapterInterface
      * @param array $identity
      * @return IdentityInterface
      */
-    protected function hydrateIdentity(array $identity) : IdentityInterface
+    protected function hydrateIdentity(array $identity): IdentityInterface
     {
         $identity = $this->getIdentityHydrator()->hydrate($identity, $this->getIdentityPrototype());
         if (!$identity instanceof IdentityInterface) {
@@ -148,5 +114,40 @@ abstract class AbstractAdapter implements AdapterInterface
         }
 
         return $identity;
+    }
+
+    /**
+     * @return HydratorInterface
+     */
+    public function getIdentityHydrator(): HydratorInterface
+    {
+        if (!$this->identityHydrator instanceof HydratorInterface) {
+            $this->identityHydrator = new ClassMethods(false);
+        }
+        return $this->identityHydrator;
+    }
+
+    /**
+     * @param HydratorInterface $identityHydrator
+     */
+    public function setIdentityHydrator(HydratorInterface $identityHydrator)
+    {
+        $this->identityHydrator = $identityHydrator;
+    }
+
+    /**
+     * @return IdentityInterface
+     */
+    public function getIdentityPrototype(): IdentityInterface
+    {
+        return $this->identityPrototype;
+    }
+
+    /**
+     * @param IdentityInterface $identityPrototype
+     */
+    public function setIdentityPrototype(IdentityInterface $identityPrototype)
+    {
+        $this->identityPrototype = $identityPrototype;
     }
 }

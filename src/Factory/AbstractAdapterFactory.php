@@ -7,7 +7,7 @@
  * Time: 6:44 PM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Factory;
 
@@ -40,7 +40,8 @@ abstract class AbstractAdapterFactory
 
         if (isset($options['identity_hydrator'])
             && is_string($options['identity_hydrator'])
-            && $hydratorManager->has($options['identity_hydrator'])) {
+            && $hydratorManager->has($options['identity_hydrator'])
+        ) {
             $options['identity_hydrator'] = $hydratorManager->get($options['identity_hydrator']);
         }
 
@@ -49,10 +50,27 @@ abstract class AbstractAdapterFactory
 
     /**
      * @param ContainerInterface $container
+     * @return HydratorPluginManager
+     */
+    public function getHydratorPluginManager(ContainerInterface $container): HydratorPluginManager
+    {
+        if (!$this->hydratorPluginManager) {
+            if ($container->has('HydratorManager')) {
+                $this->hydratorPluginManager = $container->get('HydratorManager');
+            } else {
+                $this->hydratorPluginManager = new HydratorPluginManager($container, []);
+            }
+        }
+
+        return $this->hydratorPluginManager;
+    }
+
+    /**
+     * @param ContainerInterface $container
      * @param string $name
      * @return IdentityInterface
      */
-    public function getIdentityPrototype(ContainerInterface $container, string $name) : IdentityInterface
+    public function getIdentityPrototype(ContainerInterface $container, string $name): IdentityInterface
     {
         $prototype = $name;
         if ($container->has($prototype)) {
@@ -63,27 +81,10 @@ abstract class AbstractAdapterFactory
             $prototype = new $prototype();
         }
 
-        if (! $prototype instanceof IdentityInterface) {
+        if (!$prototype instanceof IdentityInterface) {
             throw new RuntimeException('Identity prototype must be an instance of ' . IdentityInterface::class);
         }
 
         return $prototype;
-    }
-
-    /**
-     * @param ContainerInterface $container
-     * @return HydratorPluginManager
-     */
-    public function getHydratorPluginManager(ContainerInterface $container) : HydratorPluginManager
-    {
-        if (! $this->hydratorPluginManager) {
-            if ($container->has('HydratorManager')) {
-                $this->hydratorPluginManager = $container->get('HydratorManager');
-            } else {
-                $this->hydratorPluginManager = new HydratorPluginManager($container, []);
-            }
-        }
-
-        return $this->hydratorPluginManager;
     }
 }

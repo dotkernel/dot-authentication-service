@@ -7,7 +7,7 @@
  * Time: 12:37 AM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Factory;
 
@@ -68,9 +68,9 @@ class AuthenticationServiceFactory
      * @param ContainerInterface $container
      * @return AdapterFactory
      */
-    public function getAdapterFactory(ContainerInterface $container) : AdapterFactory
+    public function getAdapterFactory(ContainerInterface $container): AdapterFactory
     {
-        if (! $this->adapterFactory) {
+        if (!$this->adapterFactory) {
             $this->adapterFactory = new AdapterFactory($container);
         }
 
@@ -81,9 +81,9 @@ class AuthenticationServiceFactory
      * @param ContainerInterface $container
      * @return StorageFactory
      */
-    public function getStorageFactory(ContainerInterface $container) : StorageFactory
+    public function getStorageFactory(ContainerInterface $container): StorageFactory
     {
-        if (! $this->storageFactory) {
+        if (!$this->storageFactory) {
             $this->storageFactory = new StorageFactory($container);
         }
         return $this->storageFactory;

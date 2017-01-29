@@ -7,7 +7,7 @@
  * Time: 12:37 AM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Adapter;
 
@@ -25,15 +25,15 @@ interface AdapterInterface
      * @param ServerRequestInterface $request
      * @return void
      */
-    public function prepare(ServerRequestInterface $request) : void;
+    public function prepare(ServerRequestInterface $request): void;
 
     /**
      * @return AuthenticationResult
      */
-    public function authenticate() : AuthenticationResult;
+    public function authenticate(): AuthenticationResult;
 
     /**
      * @return ResponseInterface
      */
-    public function challenge() : ResponseInterface;
+    public function challenge(): ResponseInterface;
 }

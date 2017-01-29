@@ -7,7 +7,7 @@
  * Time: 2:30 PM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Factory;
 
@@ -36,14 +36,14 @@ class StorageFactory
         }
     }
 
-    public function create(array $options) : StorageInterface
+    public function create(array $options): StorageInterface
     {
         $type = $options['type'] ?? null;
-        if (! $type) {
+        if (!$type) {
             throw new RuntimeException('Storage adapter type is not specified in the config');
         }
 
-        if (! $this->getStoragePluginManager()->has($type)) {
+        if (!$this->getStoragePluginManager()->has($type)) {
             throw new RuntimeException(sprintf('Storage adapter type %s is not found in the plugin manager', $type));
         }
 
@@ -56,7 +56,7 @@ class StorageFactory
      */
     public function getStoragePluginManager(): StoragePluginManager
     {
-        if (! $this->storagePluginManager) {
+        if (!$this->storagePluginManager) {
             $this->storagePluginManager = new StoragePluginManager($this->container, []);
         }
         return $this->storagePluginManager;

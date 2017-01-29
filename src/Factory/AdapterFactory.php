@@ -7,7 +7,7 @@
  * Time: 2:07 PM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Factory;
 
@@ -41,14 +41,14 @@ class AdapterFactory
         }
     }
 
-    public function create(array $options) : AdapterInterface
+    public function create(array $options): AdapterInterface
     {
         $type = $options['type'] ?? null;
-        if (! $type) {
+        if (!$type) {
             throw new RuntimeException('Adapter type is not specified in the config');
         }
 
-        if (! $this->getAdapterPluginManager()->has($type)) {
+        if (!$this->getAdapterPluginManager()->has($type)) {
             throw new RuntimeException(sprintf('Adapter type %s is not found in the plugin manager', $type));
         }
 
@@ -61,7 +61,7 @@ class AdapterFactory
      */
     public function getAdapterPluginManager(): AdapterPluginManager
     {
-        if (! $this->adapterPluginManager) {
+        if (!$this->adapterPluginManager) {
             $this->adapterPluginManager = new AdapterPluginManager($this->container, []);
         }
         return $this->adapterPluginManager;

@@ -7,7 +7,7 @@
  * Time: 12:37 AM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Factory;
 
@@ -33,7 +33,8 @@ class CallbackCheckAdapterFactory extends AbstractAdapterFactory
 
         if (isset($options['adapter'])
             && is_string($options['adapter'])
-            && $container->has($options['adapter'])) {
+            && $container->has($options['adapter'])
+        ) {
             $options['adapter'] = $container->get($options['adapter']);
         }
 

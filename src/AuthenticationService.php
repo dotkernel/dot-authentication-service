@@ -7,7 +7,7 @@
  * Time: 12:37 AM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication;
 
@@ -58,7 +58,7 @@ class AuthenticationService implements AuthenticationInterface
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      */
-    public function challenge(ServerRequestInterface $request) : ResponseInterface
+    public function challenge(ServerRequestInterface $request): ResponseInterface
     {
         $this->request = $request;
 
@@ -72,7 +72,7 @@ class AuthenticationService implements AuthenticationInterface
      * @param ServerRequestInterface $request
      * @return AuthenticationResult
      */
-    public function authenticate(ServerRequestInterface $request) : AuthenticationResult
+    public function authenticate(ServerRequestInterface $request): AuthenticationResult
     {
         $this->request = $request;
 
@@ -110,7 +110,7 @@ class AuthenticationService implements AuthenticationInterface
     /**
      * @return bool
      */
-    public function hasIdentity() : bool
+    public function hasIdentity(): bool
     {
         return !$this->storage->isEmpty();
     }
@@ -134,7 +134,7 @@ class AuthenticationService implements AuthenticationInterface
     /**
      * @return IdentityInterface
      */
-    public function getIdentity() : IdentityInterface
+    public function getIdentity(): IdentityInterface
     {
         return $this->storage->read();
     }

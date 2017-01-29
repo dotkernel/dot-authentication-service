@@ -7,7 +7,7 @@
  * Time: 2:09 AM
  */
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Dot\Authentication\Adapter\Db;
 
@@ -17,10 +17,10 @@ use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Authentication\Adapter\DbTable\CallbackCheckAdapter as ZendCallbackCheckAdapter;
 use Zend\Authentication\Result;
 use Zend\Db\Adapter\Adapter;
 use Zend\Diactoros\Response\EmptyResponse;
-use Zend\Authentication\Adapter\DbTable\CallbackCheckAdapter as ZendCallbackCheckAdapter;
 
 /**
  * Class CallbackCheck
@@ -75,7 +75,7 @@ class CallbackCheckAdapter extends AbstractAdapter
         }
 
         if (isset($options['identity_columns'])) {
-            $this->setIdentityColumns((array) $options['identity_columns']);
+            $this->setIdentityColumns((array)$options['identity_columns']);
         }
 
         if (isset($options['credential_column']) && is_string($options['credential_column'])) {
@@ -97,13 +97,13 @@ class CallbackCheckAdapter extends AbstractAdapter
         );
     }
 
-    protected function validate() : void
+    protected function validate(): void
     {
-        if (! $this->adapter) {
+        if (!$this->adapter) {
             throw new RuntimeException('Db adapter is required and must be an instance of ' . Adapter::class);
         }
 
-        if (! $this->table) {
+        if (!$this->table) {
             throw new RuntimeException('Table is required and must be a non empty string');
         }
 
@@ -119,7 +119,7 @@ class CallbackCheckAdapter extends AbstractAdapter
     /**
      * @param ServerRequestInterface $request
      */
-    public function prepare(ServerRequestInterface $request) : void
+    public function prepare(ServerRequestInterface $request): void
     {
         $this->request = $request;
 
@@ -139,7 +139,7 @@ class CallbackCheckAdapter extends AbstractAdapter
     /**
      * @return ResponseInterface
      */
-    public function challenge() : ResponseInterface
+    public function challenge(): ResponseInterface
     {
         return new EmptyResponse(401, ['WWW-Authenticate' => 'FormBased']);
     }
@@ -147,10 +147,10 @@ class CallbackCheckAdapter extends AbstractAdapter
     /**
      * @return AuthenticationResult
      */
-    public function authenticate() : AuthenticationResult
+    public function authenticate(): AuthenticationResult
     {
         $result = null;
-        if (! $this->getCredentials()) {
+        if (!$this->getCredentials()) {
             return new AuthenticationResult(
                 AuthenticationResult::FAILURE_MISSING_CREDENTIALS,
                 $this->getAuthenticationOptions()->getMessagesOptions()
@@ -163,13 +163,13 @@ class CallbackCheckAdapter extends AbstractAdapter
         $credentialColumn = $this->getCredentialColumn();
 
         //add identity column to check
-        if (! empty($credentials->getIdentityColumn())
+        if (!empty($credentials->getIdentityColumn())
             && !in_array($credentials->getIdentityColumn(), $identityColumns)
         ) {
             $identityColumns = array_unshift($identityColumns, $credentials->getIdentityColumn());
         }
         //if passed credentials contain a credential column, overwrite the config one
-        if (! empty($credentials->getCredentialColumn())) {
+        if (!empty($credentials->getCredentialColumn())) {
             $credentialColumn = $credentials->getCredentialColumn();
         }
 
@@ -208,11 +208,59 @@ class CallbackCheckAdapter extends AbstractAdapter
     }
 
     /**
+     * @return DbCredentials
+     */
+    public function getCredentials(): ?DbCredentials
+    {
+        return $this->credentials;
+    }
+
+    /**
+     * @param DbCredentials $credentials
+     */
+    public function setCredentials(DbCredentials $credentials)
+    {
+        $this->credentials = $credentials;
+    }
+
+    /**
+     * @return array
+     */
+    public function getIdentityColumns(): array
+    {
+        return $this->identityColumns;
+    }
+
+    /**
+     * @param array $identityColumns
+     */
+    public function setIdentityColumns(array $identityColumns)
+    {
+        $this->identityColumns = $identityColumns;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCredentialColumn(): string
+    {
+        return $this->credentialColumn;
+    }
+
+    /**
+     * @param string $credentialColumn
+     */
+    public function setCredentialColumn(string $credentialColumn)
+    {
+        $this->credentialColumn = $credentialColumn;
+    }
+
+    /**
      * @param Result $result
      * @return AuthenticationResult
      * @throws \Exception
      */
-    protected function marshalZendResult(Result $result) : AuthenticationResult
+    protected function marshalZendResult(Result $result): AuthenticationResult
     {
         $code = Utils::$authResultCodeMap[$result->getCode()];
         //we'll give the user only general error info, to prevent user enumeration attacks
@@ -268,38 +316,6 @@ class CallbackCheckAdapter extends AbstractAdapter
     }
 
     /**
-     * @return array
-     */
-    public function getIdentityColumns(): array
-    {
-        return $this->identityColumns;
-    }
-
-    /**
-     * @param array $identityColumns
-     */
-    public function setIdentityColumns(array $identityColumns)
-    {
-        $this->identityColumns = $identityColumns;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCredentialColumn(): string
-    {
-        return $this->credentialColumn;
-    }
-
-    /**
-     * @param string $credentialColumn
-     */
-    public function setCredentialColumn(string $credentialColumn)
-    {
-        $this->credentialColumn = $credentialColumn;
-    }
-
-    /**
      * @return callable
      */
     public function getCallbackCheck(): ?callable
@@ -329,21 +345,5 @@ class CallbackCheckAdapter extends AbstractAdapter
     public function setZendCallbackAdapter(ZendCallbackCheckAdapter $zendCallbackAdapter)
     {
         $this->zendCallbackAdapter = $zendCallbackAdapter;
-    }
-
-    /**
-     * @return DbCredentials
-     */
-    public function getCredentials(): ?DbCredentials
-    {
-        return $this->credentials;
-    }
-
-    /**
-     * @param DbCredentials $credentials
-     */
-    public function setCredentials(DbCredentials $credentials)
-    {
-        $this->credentials = $credentials;
     }
 }
