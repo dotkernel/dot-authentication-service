@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Adapter\Db\CallbackCheckAdapter;
-use Dot\Authentication\Exception\RuntimeException;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -23,65 +22,30 @@ class CallbackCheckAdapterFactory extends AbstractAdapterFactory
 {
     /**
      * @param ContainerInterface $container
-     * @param $resolvedName
+     * @param $requestedName
      * @param array $options
      * @return CallbackCheckAdapter
      * @throws \Exception
      */
-    public function __invoke(ContainerInterface $container, $resolvedName, array $options = [])
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = [])
     {
-        $dbAdapter = isset($options['db_adapter']) ? $options['db_adapter'] : '';
-        $tableName = isset($options['table_name']) ? $options['table_name'] : '';
+        parent::__invoke($container, $requestedName, $options);
 
-        $identityColumns = isset($options['identity_columns']) ? $options['identity_columns'] : [];
-        if (is_string($identityColumns)) {
-            $identityColumns = array($identityColumns);
+        if (isset($options['adapter'])
+            && is_string($options['adapter'])
+            && $container->has($options['adapter'])) {
+            $options['adapter'] = $container->get($options['adapter']);
         }
 
-        if (!is_array($identityColumns)) {
-            throw new RuntimeException(
-                "CallbackCheck adapter identity columns must be a string or an array of strings"
-            );
+        if (isset($options['callback_check']) && is_string($options['callback_check'])) {
+            if ($container->has($options['callback_check'])) {
+                $options['callback_check'] = $container->get($options['callback_check']);
+            } elseif (class_exists($options['callback_check'])) {
+                $class = $options['callback_check'];
+                $options['callback_check'] = new $class();
+            }
         }
 
-        $credentialColumn = isset($options['credential_column']) ? $options['credential_column'] : null;
-        if ($credentialColumn && !is_string($credentialColumn)) {
-            throw new RuntimeException("CallbackCheck adapter credential column must be a string");
-        }
-
-        $callbackCheck = isset($options['callback_check']) ? $options['callback_check'] : null;
-
-        if (empty($dbAdapter) || !is_string($dbAdapter) || !$container->has($dbAdapter)) {
-            throw new RuntimeException(sprintf("CallbackCheck adapter needs a zend db adapter name option"));
-        }
-
-        if (empty($tableName) || !is_string($tableName)) {
-            throw new RuntimeException(sprintf("CallbackCheck adapter missing table name option"));
-        }
-
-        $callbackCheck = $this->getDependencyObject($container, $callbackCheck);
-        if ($callbackCheck && !is_callable($callbackCheck)) {
-            throw new RuntimeException("CallbackCheck adapter needs a valid callable as the credential check method");
-        }
-
-        $db = $container->get($dbAdapter);
-
-        $adapter = new CallbackCheckAdapter(
-            $moduleOptions,
-            $db,
-            $tableName,
-            $identityColumns,
-            $credentialColumn,
-            $callbackCheck
-        );
-
-        $adapter->setIdentityPrototype($identity);
-        $adapter->setIdentityHydrator($hydrator);
-
-        return $adapter;
-    }
-
-    public function processOptions(&$options) {
-
+        return new $requestedName($options);
     }
 }

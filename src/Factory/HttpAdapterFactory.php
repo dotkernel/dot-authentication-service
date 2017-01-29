@@ -7,76 +7,51 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types=1);
+
 namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Adapter\HttpAdapter;
-use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Http\ResolverPluginManager;
-use Dot\Authentication\Options\AuthenticationOptions;
-use Dot\Helpers\DependencyHelperTrait;
 use Interop\Container\ContainerInterface;
-use Zend\Hydrator\ClassMethods;
-use Zend\Hydrator\HydratorInterface;
 
 /**
  * Class HttpAdapterFactory
  * @package Dot\Authentication\Factory
  */
-class HttpAdapterFactory
+class HttpAdapterFactory extends AbstractAdapterFactory
 {
-    use DependencyHelperTrait;
-
     /**
      * @param ContainerInterface $container
-     * @param $resolvedName
+     * @param $requestedName
      * @param array $options
      * @return HttpAdapter
      */
-    public function __invoke(ContainerInterface $container, $resolvedName, array $options = [])
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = [])
     {
-        $this->container = $container;
+        parent::__invoke($container, $requestedName, $options);
 
-        /** @var AuthenticationOptions $moduleOptions */
-        $moduleOptions = $container->get(AuthenticationOptions::class);
-
-        //get identity and its hydrator objects, as set in config
-        $identity = $this->getDependencyObject($container, $moduleOptions->getIdentityPrototype());
-        if (!is_object($identity)) {
-            throw new RuntimeException('No valid identity prototype specified');
-        }
-        $hydrator = $this->getDependencyObject($container, $moduleOptions->getIdentityHydrator());
-        if (!$hydrator instanceof HydratorInterface) {
-            $hydrator = new ClassMethods(false);
-        }
-
+        /** @var ResolverPluginManager $resolverPluginManager */
         $resolverPluginManager = $container->get(ResolverPluginManager::class);
 
-        $resolverConfig = isset($options['resolvers']) ? $options['resolvers'] : [];
-
-        $basicResolver = null;
-        $digestResolver = null;
-        if (isset($resolverConfig['basic']) && is_array($resolverConfig['basic'])) {
-            $basicResolver = $resolverPluginManager->get(
-                $resolverConfig['basic']['name'],
-                $resolverConfig['basic']['options']
+        if (isset($options['basic_resolver']) && is_array($options['basic_resolver'])
+            && isset($options['basic_resolver']['name'])
+            && $resolverPluginManager->has($options['basic_resolver']['name'])) {
+            $options['basic_resolver'] = $resolverPluginManager->get(
+                $options['basic_resolver']['name'],
+                isset($options['basic_resolver']['options']) ? $options['basic_resolver']['options'] : []
             );
         }
 
-        if (isset($resolverConfig['digest']) && is_array($resolverConfig['digest'])) {
-            $digestResolver = $resolverPluginManager->get(
-                $resolverConfig['digest']['name'],
-                $resolverConfig['digest']['options']
+        if (isset($options['digest_resolver']) && is_array($options['digest_resolver'])
+            && isset($options['digest_resolver']['name'])
+            && $resolverPluginManager->has($options['digest_resolver']['name'])) {
+            $options['digest_resolver'] = $resolverPluginManager->get(
+                $options['digest_resolver']['name'],
+                isset($options['digest_resolver']['options']) ? $options['digest_resolver']['options'] : []
             );
         }
 
-        if (!$basicResolver && !$digestResolver) {
-            throw new RuntimeException("At least one http resolver must be set in order to use the adapter");
-        }
-
-        $httpAdapter = new HttpAdapter($moduleOptions, $options, $basicResolver, $digestResolver);
-        $httpAdapter->setIdentityPrototype($identity);
-        $httpAdapter->setIdentityHydrator($hydrator);
-
-        return $httpAdapter;
+        return new $requestedName($options);
     }
 }

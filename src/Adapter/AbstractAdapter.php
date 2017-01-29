@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Dot\Authentication\Adapter;
 
 use Dot\Authentication\Exception\InvalidArgumentException;
+use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Identity\IdentityInterface;
 use Dot\Authentication\Options\AuthenticationOptions;
 use Psr\Http\Message\ServerRequestInterface;
@@ -64,7 +65,7 @@ abstract class AbstractAdapter implements AdapterInterface
     /**
      * @return ServerRequestInterface
      */
-    public function getRequest() : ServerRequestInterface
+    public function getRequest() : ?ServerRequestInterface
     {
         return $this->request;
     }
@@ -129,5 +130,23 @@ abstract class AbstractAdapter implements AdapterInterface
     public function setAuthenticationOptions(AuthenticationOptions $authenticationOptions)
     {
         $this->authenticationOptions = $authenticationOptions;
+    }
+
+    /**
+     * @param array $identity
+     * @return IdentityInterface
+     */
+    protected function hydrateIdentity(array $identity) : IdentityInterface
+    {
+        $identity = $this->getIdentityHydrator()->hydrate($identity, $this->getIdentityPrototype());
+        if (!$identity instanceof IdentityInterface) {
+            throw new RuntimeException(sprintf(
+                'Identity object must be an instance of %s, "%s given"',
+                IdentityInterface::class,
+                is_object($identity) ? get_class($identity) : gettype($identity)
+            ));
+        }
+
+        return $identity;
     }
 }

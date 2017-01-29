@@ -7,6 +7,8 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types=1);
+
 namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Exception\RuntimeException;
@@ -21,11 +23,11 @@ class FileResolverFactory
 {
     /**
      * @param ContainerInterface $container
-     * @param $resolvedName
+     * @param $requestedName
      * @param array $options
      * @return FileResolver
      */
-    public function __invoke(ContainerInterface $container, $resolvedName, array $options = [])
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = [])
     {
         $path = isset($options['path']) ? $options['path'] : '';
 

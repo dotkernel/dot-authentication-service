@@ -14,7 +14,6 @@ namespace Dot\Authentication\Adapter\Db;
 use Dot\Authentication\Adapter\AbstractAdapter;
 use Dot\Authentication\AuthenticationResult;
 use Dot\Authentication\Exception\RuntimeException;
-use Dot\Authentication\Identity\IdentityInterface;
 use Dot\Authentication\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -101,6 +100,10 @@ class CallbackCheckAdapter extends AbstractAdapter
 
         if (empty($this->identityColumns)) {
             throw new RuntimeException('At least one identity column name must be specified');
+        }
+
+        if (empty($this->credentialColumn)) {
+            throw new RuntimeException('Credential column must be given as a non empty string');
         }
     }
 
@@ -217,14 +220,7 @@ class CallbackCheckAdapter extends AbstractAdapter
                 throw new RuntimeException("Identity object missing or could not be converted to array");
             }
 
-            $identity = $this->getIdentityHydrator()->hydrate($identity, $this->getIdentityPrototype());
-            if (!$identity instanceof IdentityInterface) {
-                throw new RuntimeException(sprintf(
-                    'Identity must be an instance of %s, "%s given"',
-                    IdentityInterface::class,
-                    is_object($identity) ? get_class($identity) : gettype($identity)
-                ));
-            }
+            $identity = $this->hydrateIdentity($identity);
         }
 
         return new AuthenticationResult($code, $message, $identity);
@@ -297,7 +293,7 @@ class CallbackCheckAdapter extends AbstractAdapter
     /**
      * @return callable
      */
-    public function getCallbackCheck(): callable
+    public function getCallbackCheck(): ?callable
     {
         return $this->callbackCheck;
     }
@@ -329,7 +325,7 @@ class CallbackCheckAdapter extends AbstractAdapter
     /**
      * @return DbCredentials
      */
-    public function getCredentials(): DbCredentials
+    public function getCredentials(): ?DbCredentials
     {
         return $this->credentials;
     }

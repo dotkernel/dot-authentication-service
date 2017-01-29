@@ -14,7 +14,6 @@ namespace Dot\Authentication\Adapter;
 use Dot\Authentication\AuthenticationResult;
 use Dot\Authentication\Exception\InvalidArgumentException;
 use Dot\Authentication\Exception\RuntimeException;
-use Dot\Authentication\Identity\IdentityInterface;
 use Dot\Authentication\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -63,7 +62,6 @@ class HttpAdapter extends AbstractAdapter
         if (isset($options['digest_resolver']) && $options['digest_resolver'] instanceof ResolverInterface) {
             $this->setDigestResolver($options['digest_resolver']);
         }
-
 
         $this->validate();
 
@@ -159,14 +157,7 @@ class HttpAdapter extends AbstractAdapter
                 throw new RuntimeException("Missing identity object or cannot be converted to array");
             }
 
-            $identity = $this->getIdentityHydrator()->hydrate($identity, $this->getIdentityPrototype());
-            if (!$identity instanceof IdentityInterface) {
-                throw new RuntimeException(sprintf(
-                    'Identity must be an instance of %s, "%s given"',
-                    IdentityInterface::class,
-                    is_object($identity) ? get_class($identity) : gettype($identity)
-                ));
-            }
+            $identity = $this->hydrateIdentity($identity);
         }
 
         return new AuthenticationResult($code, $message, $identity);
@@ -207,7 +198,7 @@ class HttpAdapter extends AbstractAdapter
     /**
      * @return ResolverInterface
      */
-    public function getBasicResolver(): ResolverInterface
+    public function getBasicResolver(): ?ResolverInterface
     {
         return $this->basicResolver;
     }
@@ -223,7 +214,7 @@ class HttpAdapter extends AbstractAdapter
     /**
      * @return ResolverInterface
      */
-    public function getDigestResolver(): ResolverInterface
+    public function getDigestResolver(): ?ResolverInterface
     {
         return $this->digestResolver;
     }
