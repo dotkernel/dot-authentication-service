@@ -59,6 +59,6 @@ class MessagesOptions extends AbstractOptions
      */
     public function getMessage(int $key): string
     {
-        return isset($this->messages[$key]) ? $this->messages[$key] : '';
+        return $this->messages[$key] ?? '';
     }
 }
