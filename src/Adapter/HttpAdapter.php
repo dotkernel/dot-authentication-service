@@ -46,6 +46,13 @@ class HttpAdapter extends AbstractAdapter
     /**
      * HttpAdapter constructor.
      * @param array $options
+     *
+     * Valid options are:
+     * - identity_prototype : identity class which will be hydrated
+     * - identity_hydrator : instance of HydratorInterface used to hydrate the identity object
+     * - config : config array as required by the underlying zend Http adapter
+     * - basic_resolver : ResolverInterface instance to use for basic http authentication
+     * - digest_resolver : ResolverInterface instance to use for digest http authentication
      */
     public function __construct(array $options = [])
     {

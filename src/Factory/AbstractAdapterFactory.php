@@ -76,14 +76,12 @@ abstract class AbstractAdapterFactory
      */
     public function getHydratorPluginManager(ContainerInterface $container) : HydratorPluginManager
     {
-        if ($this->hydratorPluginManager) {
-            return $this->hydratorPluginManager;
-        }
-
-        if ($container->has('HydratorManager')) {
-            $this->hydratorPluginManager = $container->get('HydratorManager');
-        } else {
-            $this->hydratorPluginManager = new HydratorPluginManager($container, []);
+        if (! $this->hydratorPluginManager) {
+            if ($container->has('HydratorManager')) {
+                $this->hydratorPluginManager = $container->get('HydratorManager');
+            } else {
+                $this->hydratorPluginManager = new HydratorPluginManager($container, []);
+            }
         }
 
         return $this->hydratorPluginManager;

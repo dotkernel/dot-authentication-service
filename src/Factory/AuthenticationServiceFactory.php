@@ -7,6 +7,8 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types=1);
+
 namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Adapter\AdapterPluginManager;
@@ -22,6 +24,12 @@ use Interop\Container\ContainerInterface;
  */
 class AuthenticationServiceFactory
 {
+    /** @var  AdapterFactory */
+    protected $adapterFactory;
+
+    /** @var  StorageFactory */
+    protected $storageFactory;
+
     /**
      * @param ContainerInterface $container
      * @param string $requestedName
@@ -31,23 +39,53 @@ class AuthenticationServiceFactory
     {
         $authenticationOptions = $container->get(AuthenticationOptions::class);
 
-        $adapterPluginManager = $container->get(AdapterPluginManager::class);
-        $storagePluginManager = $container->get(StoragePluginManager::class);
+        if ($container->has(AdapterPluginManager::class)) {
+            $this->adapterFactory = new AdapterFactory($container, $container->get(AdapterPluginManager::class));
+        }
+
+        if ($container->has(StoragePluginManager::class)) {
+            $this->storageFactory = new StorageFactory($container, $container->get(StoragePluginManager::class));
+        }
 
         $adapterConfig = $authenticationOptions->getAdapter();
         $storageConfig = $authenticationOptions->getStorage();
 
         if (empty($adapterConfig)) {
-            throw new RuntimeException('No authentication adapter is set');
+            throw new RuntimeException('No authentication adapter config is set');
         }
 
         if (empty($storageConfig)) {
-            throw new RuntimeException('No authentication storage adapter is set');
+            throw new RuntimeException('No authentication storage adapter config is set');
         }
 
-        $adapter = $adapterPluginManager->get(key($adapterConfig), current($adapterConfig));
-        $storage = $storagePluginManager->get(key($storageConfig), current($storageConfig));
+        $adapter = $this->getAdapterFactory($container)->create($adapterConfig);
+        $storage = $this->getStorageFactory($container)->create($storageConfig);
 
         return new AuthenticationService($adapter, $storage);
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return AdapterFactory
+     */
+    public function getAdapterFactory(ContainerInterface $container) : AdapterFactory
+    {
+        if (! $this->adapterFactory) {
+            $this->adapterFactory = new AdapterFactory($container);
+        }
+
+        return $this->adapterFactory;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return StorageFactory
+     */
+    public function getStorageFactory(ContainerInterface $container) : StorageFactory
+    {
+        if (! $this->storageFactory) {
+            $this->storageFactory = new StorageFactory($container);
+        }
+        return $this->storageFactory;
     }
 }

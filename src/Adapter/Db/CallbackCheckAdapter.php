@@ -52,6 +52,15 @@ class CallbackCheckAdapter extends AbstractAdapter
     /**
      * CallbackCheck constructor.
      * @param array $options
+     *
+     * Valid options are
+     * - identity_prototype : identity class which will be hydrated
+     * - identity_hydrator : instance of HydratorInterface used to hydrate the identity object
+     * - adapter : A Zend\Db\Adapter\Adapter instance
+     * - table: table name
+     * - identity_columns: array containing column names used to authenticate
+     * - credential_column : string value representing the column name of the credential
+     * - callback_check : a valid callable used to validate the password against some hashing algorithm
      */
     public function __construct(array $options = [])
     {

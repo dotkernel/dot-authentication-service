@@ -23,6 +23,11 @@ class SessionStorage extends Session implements StorageInterface
     /**
      * SessionStorage constructor.
      * @param array $options
+     *
+     * Valid options are:
+     * - namespace : session namespace name used to store identity
+     * - member: session container name to use
+     * - session_manager: A zend-session ManagerInterface to use
      */
     public function __construct(array $options = [])
     {
