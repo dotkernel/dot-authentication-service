@@ -182,13 +182,19 @@ class HttpAdapter extends AbstractAdapter
         ) {
             return new AuthenticationResult(
                 AuthenticationResult::FAILURE_MISSING_CREDENTIALS,
-                $this->getAuthenticationOptions()->getMessagesOptions()
-                    ->getMessage(AuthenticationResult::FAILURE_MISSING_CREDENTIALS)
+                Utils::$authCodeToMessage[AuthenticationResult::FAILURE_MISSING_CREDENTIALS]
             );
         }
 
         $result = $this->zendHttpAdapter->authenticate();
-        return $this->marshalZendResult($result);
+        if ($result) {
+            return $this->marshalZendResult($result);
+        }
+
+        return new AuthenticationResult(
+            AuthenticationResult::FAILURE_UNCATEGORIZED,
+            Utils::$authCodeToMessage[AuthenticationResult::FAILURE_UNCATEGORIZED]
+        );
     }
 
     /**
@@ -201,9 +207,9 @@ class HttpAdapter extends AbstractAdapter
     {
         $code = Utils::$authResultCodeMap[$result->getCode()];
         //we'll give the user only general error info, to prevent user enumeration attacks
-        $message = $this->getAuthenticationOptions()->getMessagesOptions()->getMessage($code);
-        $identity = null;
+        $message = Utils::$authCodeToMessage[$code];
 
+        $identity = null;
         if ($result->isValid()) {
             $identity = $result->getIdentity();
             //try to convert to array if not already...

@@ -153,8 +153,7 @@ class CallbackCheckAdapter extends AbstractAdapter
         if (!$this->getCredentials()) {
             return new AuthenticationResult(
                 AuthenticationResult::FAILURE_MISSING_CREDENTIALS,
-                $this->getAuthenticationOptions()->getMessagesOptions()
-                    ->getMessage(AuthenticationResult::FAILURE_MISSING_CREDENTIALS)
+                Utils::$authCodeToMessage[AuthenticationResult::FAILURE_MISSING_CREDENTIALS]
             );
         }
 
@@ -202,8 +201,7 @@ class CallbackCheckAdapter extends AbstractAdapter
 
         return new AuthenticationResult(
             AuthenticationResult::FAILURE_UNCATEGORIZED,
-            $this->getAuthenticationOptions()->getMessagesOptions()
-                ->getMessage(AuthenticationResult::FAILURE_UNCATEGORIZED)
+            Utils::$authCodeToMessage[AuthenticationResult::FAILURE_UNCATEGORIZED]
         );
     }
 
@@ -264,9 +262,9 @@ class CallbackCheckAdapter extends AbstractAdapter
     {
         $code = Utils::$authResultCodeMap[$result->getCode()];
         //we'll give the user only general error info, to prevent user enumeration attacks
-        $message = $this->getAuthenticationOptions()->getMessagesOptions()->getMessage($code);
-        $identity = null;
+        $message = Utils::$authCodeToMessage[$code];
 
+        $identity = null;
         if ($result->isValid()) {
             // get the identity object from the adapter,
             // as the underlying result identity does not store the entire entity

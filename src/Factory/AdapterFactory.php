@@ -41,6 +41,10 @@ class AdapterFactory
         }
     }
 
+    /**
+     * @param array $options
+     * @return AdapterInterface
+     */
     public function create(array $options): AdapterInterface
     {
         $type = $options['type'] ?? null;

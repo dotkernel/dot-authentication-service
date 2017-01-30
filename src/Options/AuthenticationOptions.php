@@ -31,9 +31,6 @@ class AuthenticationOptions extends AbstractOptions
     /** @var  string */
     protected $identityHydrator;
 
-    /** @var  MessagesOptions */
-    protected $messagesOptions;
-
     /**
      * AuthenticationOptions constructor.
      * @param null $options
@@ -106,24 +103,5 @@ class AuthenticationOptions extends AbstractOptions
     public function setIdentityHydrator(string $identityHydrator)
     {
         $this->identityHydrator = $identityHydrator;
-    }
-
-    /**
-     * @return MessagesOptions
-     */
-    public function getMessagesOptions(): MessagesOptions
-    {
-        if (!$this->messagesOptions) {
-            $this->setMessagesOptions([]);
-        }
-        return $this->messagesOptions;
-    }
-
-    /**
-     * @param array $messagesOptions
-     */
-    public function setMessagesOptions(array $messagesOptions)
-    {
-        $this->messagesOptions = new MessagesOptions($messagesOptions);
     }
 }
