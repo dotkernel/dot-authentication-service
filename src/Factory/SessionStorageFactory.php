@@ -27,7 +27,7 @@ class SessionStorageFactory
      * @param array $options
      * @return SessionStorage
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
     {
         if (isset($options['session_manager']) && is_string($options['session_manager'])) {
             if ($container->has($options['session_manager'])) {

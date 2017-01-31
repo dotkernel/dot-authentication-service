@@ -31,7 +31,7 @@ abstract class AbstractAdapterFactory
      * @param $requestedName
      * @param array $options
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
     {
         $hydratorManager = $this->getHydratorPluginManager($container);
         if (isset($options['identity_prototype']) && is_string($options['identity_prototype'])) {

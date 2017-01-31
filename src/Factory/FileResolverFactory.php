@@ -27,7 +27,7 @@ class FileResolverFactory
      * @param array $options
      * @return FileResolver
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
     {
         $path = $options['path'] ?? '';
 
@@ -35,6 +35,6 @@ class FileResolverFactory
             throw new RuntimeException("FileResolver requires a `path` parameter to be set in config");
         }
 
-        return new FileResolver($path);
+        return new $requestedName($path);
     }
 }

@@ -27,7 +27,7 @@ class HttpAdapterFactory extends AbstractAdapterFactory
      * @param array $options
      * @return HttpAdapter
      */
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
     {
         parent::__invoke($container, $requestedName, $options);
 
