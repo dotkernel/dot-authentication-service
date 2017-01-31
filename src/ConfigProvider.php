@@ -47,15 +47,14 @@ class ConfigProvider
     {
         return [
             'factories' => [
-                AuthenticationInterface::class => AuthenticationServiceFactory::class,
-
+                AuthenticationService::class => AuthenticationServiceFactory::class,
                 AdapterPluginManager::class => AdapterPluginManagerFactory::class,
-
                 ResolverPluginManager::class => ResolverPluginManagerFactory::class,
-
                 StoragePluginManager::class => StoragePluginManagerFactory::class,
-
                 AuthenticationOptions::class => AuthenticationOptionsFactory::class,
+            ],
+            'aliases' => [
+                AuthenticationInterface::class => AuthenticationService::class,
             ]
         ];
     }

@@ -9,18 +9,16 @@
 
 declare(strict_types = 1);
 
-namespace Dot\Authentication\Factory;
+namespace Dot\Authentication\Storage;
 
 use Dot\Authentication\Exception\RuntimeException;
-use Dot\Authentication\Storage\StorageInterface;
-use Dot\Authentication\Storage\StoragePluginManager;
 use Interop\Container\ContainerInterface;
 
 /**
  * Class StorageFactory
  * @package Dot\Authentication\Factory
  */
-class StorageFactory
+class Factory
 {
     /** @var  ContainerInterface */
     protected $container;

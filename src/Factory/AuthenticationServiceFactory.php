@@ -12,6 +12,8 @@ declare(strict_types = 1);
 namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Adapter\AdapterPluginManager;
+use Dot\Authentication\Adapter\Factory as AdapterFactory;
+use Dot\Authentication\Storage\Factory as StorageFactory;
 use Dot\Authentication\AuthenticationService;
 use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Options\AuthenticationOptions;
@@ -61,7 +63,7 @@ class AuthenticationServiceFactory
         $adapter = $this->getAdapterFactory($container)->create($adapterConfig);
         $storage = $this->getStorageFactory($container)->create($storageConfig);
 
-        return new AuthenticationService($adapter, $storage);
+        return new $requestedName($adapter, $storage);
     }
 
     /**

@@ -9,10 +9,8 @@
 
 declare(strict_types = 1);
 
-namespace Dot\Authentication\Factory;
+namespace Dot\Authentication\Adapter;
 
-use Dot\Authentication\Adapter\AdapterInterface;
-use Dot\Authentication\Adapter\AdapterPluginManager;
 use Dot\Authentication\Exception\RuntimeException;
 use Interop\Container\ContainerInterface;
 
@@ -20,7 +18,7 @@ use Interop\Container\ContainerInterface;
  * Class AdapterFactory
  * @package Dot\Authentication\Factory
  */
-class AdapterFactory
+class Factory
 {
     /** @var  ContainerInterface */
     protected $container;
