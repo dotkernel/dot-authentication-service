@@ -28,8 +28,9 @@ abstract class AbstractAdapterFactory
 
     /**
      * @param ContainerInterface $container
-     * @param $requestedName
+     * @param string $requestedName
      * @param array $options
+     * @return mixed
      */
     public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
     {
@@ -46,6 +47,8 @@ abstract class AbstractAdapterFactory
         }
 
         $options['authentication_options'] = $container->get(AuthenticationOptions::class);
+
+        return new $requestedName($options);
     }
 
     /**

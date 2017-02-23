@@ -29,8 +29,6 @@ class HttpAdapterFactory extends AbstractAdapterFactory
      */
     public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
     {
-        parent::__invoke($container, $requestedName, $options);
-
         /** @var ResolverPluginManager $resolverPluginManager */
         $resolverPluginManager = $container->get(ResolverPluginManager::class);
 
@@ -54,6 +52,6 @@ class HttpAdapterFactory extends AbstractAdapterFactory
             );
         }
 
-        return new $requestedName($options);
+        return parent::__invoke($container, $requestedName, $options);
     }
 }

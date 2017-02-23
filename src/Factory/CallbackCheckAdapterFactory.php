@@ -29,8 +29,6 @@ class CallbackCheckAdapterFactory extends AbstractAdapterFactory
      */
     public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
     {
-        parent::__invoke($container, $requestedName, $options);
-
         if (isset($options['adapter'])
             && is_string($options['adapter'])
             && $container->has($options['adapter'])
@@ -47,6 +45,6 @@ class CallbackCheckAdapterFactory extends AbstractAdapterFactory
             }
         }
 
-        return new $requestedName($options);
+        return parent::__invoke($container, $requestedName, $options);
     }
 }
