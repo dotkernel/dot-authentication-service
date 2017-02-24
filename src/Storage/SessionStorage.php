@@ -29,8 +29,9 @@ class SessionStorage extends Session implements StorageInterface
      * - member: session container name to use
      * - session_manager: A zend-session ManagerInterface to use
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = null)
     {
+        $options = $options ?? [];
         $namespace = null;
         $member = null;
         $manager = null;

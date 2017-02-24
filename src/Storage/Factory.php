@@ -45,7 +45,7 @@ class Factory
             throw new RuntimeException(sprintf('Storage adapter type %s is not found in the plugin manager', $type));
         }
 
-        $options = $options['options'] ?? [];
+        $options = $options['options'] ?? null;
         return $this->getStoragePluginManager()->get($type, $options);
     }
 

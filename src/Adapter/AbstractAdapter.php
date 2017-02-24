@@ -41,8 +41,9 @@ abstract class AbstractAdapter implements AdapterInterface
      * AbstractAdapter constructor.
      * @param array $options
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = null)
     {
+        $options = $options ?? [];
         if (isset($options['identity_prototype']) && $options['identity_prototype'] instanceof IdentityInterface) {
             $this->setIdentityPrototype($options['identity_prototype']);
         }

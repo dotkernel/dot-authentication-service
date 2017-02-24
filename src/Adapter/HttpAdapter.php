@@ -54,8 +54,9 @@ class HttpAdapter extends AbstractAdapter
      * - basic_resolver : ResolverInterface instance to use for basic http authentication
      * - digest_resolver : ResolverInterface instance to use for digest http authentication
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = null)
     {
+        $options = $options ?? [];
         parent::__construct($options);
 
         if (isset($options['config']) && is_array($options['config'])) {

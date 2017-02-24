@@ -54,7 +54,7 @@ class Factory
             throw new RuntimeException(sprintf('Adapter type %s is not found in the plugin manager', $type));
         }
 
-        $options = $options['options'] ?? [];
+        $options = $options['options'] ?? null;
         return $this->getAdapterPluginManager()->get($type, $options);
     }
 

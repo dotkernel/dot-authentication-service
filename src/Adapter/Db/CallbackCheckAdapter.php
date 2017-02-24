@@ -62,8 +62,9 @@ class CallbackCheckAdapter extends AbstractAdapter
      * - credential_column : string value representing the column name of the credential
      * - callback_check : a valid callable used to validate the password against some hashing algorithm
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = null)
     {
+        $options = $options ?? [];
         parent::__construct($options);
 
         if (isset($options['adapter']) && $options['adapter'] instanceof Adapter) {
