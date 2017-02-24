@@ -134,7 +134,7 @@ class AuthenticationService implements AuthenticationInterface
     /**
      * @return IdentityInterface
      */
-    public function getIdentity(): IdentityInterface
+    public function getIdentity(): ?IdentityInterface
     {
         return $this->storage->read();
     }
