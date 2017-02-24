@@ -217,7 +217,7 @@ class CallbackCheckAdapter extends AbstractAdapter
     /**
      * @param DbCredentials $credentials
      */
-    public function setCredentials(DbCredentials $credentials)
+    public function setCredentials(DbCredentials $credentials = null)
     {
         $this->credentials = $credentials;
     }
