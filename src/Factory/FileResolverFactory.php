@@ -27,8 +27,9 @@ class FileResolverFactory
      * @param array $options
      * @return FileResolver
      */
-    public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = null)
     {
+        $options = $options ?? [];
         $path = $options['path'] ?? '';
 
         if (empty($path)) {

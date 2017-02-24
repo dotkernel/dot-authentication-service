@@ -32,8 +32,9 @@ abstract class AbstractAdapterFactory
      * @param array $options
      * @return mixed
      */
-    public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = null)
     {
+        $options = $options ?? [];
         $hydratorManager = $this->getHydratorPluginManager($container);
         if (isset($options['identity_prototype']) && is_string($options['identity_prototype'])) {
             $options['identity_prototype'] = $this->getIdentityPrototype($container, $options['identity_prototype']);

@@ -27,8 +27,9 @@ class CallbackCheckAdapterFactory extends AbstractAdapterFactory
      * @return CallbackCheckAdapter
      * @throws \Exception
      */
-    public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = null)
     {
+        $options = $options ?? [];
         if (isset($options['adapter'])
             && is_string($options['adapter'])
             && $container->has($options['adapter'])

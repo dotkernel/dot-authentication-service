@@ -27,8 +27,9 @@ class HttpAdapterFactory extends AbstractAdapterFactory
      * @param array $options
      * @return HttpAdapter
      */
-    public function __invoke(ContainerInterface $container, string $requestedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = null)
     {
+        $options = $options ?? [];
         /** @var ResolverPluginManager $resolverPluginManager */
         $resolverPluginManager = $container->get(ResolverPluginManager::class);
 
