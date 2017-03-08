@@ -7,12 +7,16 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Adapter\AdapterPluginManager;
+use Dot\Authentication\Adapter\Factory as AdapterFactory;
 use Dot\Authentication\AuthenticationService;
 use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Options\AuthenticationOptions;
+use Dot\Authentication\Storage\Factory as StorageFactory;
 use Dot\Authentication\Storage\StoragePluginManager;
 use Interop\Container\ContainerInterface;
 
@@ -22,31 +26,68 @@ use Interop\Container\ContainerInterface;
  */
 class AuthenticationServiceFactory
 {
+    /** @var  AdapterFactory */
+    protected $adapterFactory;
+
+    /** @var  StorageFactory */
+    protected $storageFactory;
+
     /**
      * @param ContainerInterface $container
+     * @param string $requestedName
      * @return AuthenticationService
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName)
     {
-        $moduleOptions = $container->get(AuthenticationOptions::class);
+        $authenticationOptions = $container->get(AuthenticationOptions::class);
 
-        $adapterPluginManager = $container->get(AdapterPluginManager::class);
-        $storagePluginManager = $container->get(StoragePluginManager::class);
+        if ($container->has(AdapterPluginManager::class)) {
+            $this->adapterFactory = new AdapterFactory($container, $container->get(AdapterPluginManager::class));
+        }
 
-        $adapterConfig = $moduleOptions->getAdapter();
-        $storageConfig = $moduleOptions->getStorage();
+        if ($container->has(StoragePluginManager::class)) {
+            $this->storageFactory = new StorageFactory($container, $container->get(StoragePluginManager::class));
+        }
+
+        $adapterConfig = $authenticationOptions->getAdapter();
+        $storageConfig = $authenticationOptions->getStorage();
 
         if (empty($adapterConfig)) {
-            throw new RuntimeException('No authentication adapter is set');
+            throw new RuntimeException('No authentication adapter config is set');
         }
 
         if (empty($storageConfig)) {
-            throw new RuntimeException('No authentication storage adapter is set');
+            throw new RuntimeException('No authentication storage adapter config is set');
         }
 
-        $adapter = $adapterPluginManager->get(key($adapterConfig), current($adapterConfig));
-        $storage = $storagePluginManager->get(key($storageConfig), current($storageConfig));
+        $adapter = $this->getAdapterFactory($container)->create($adapterConfig);
+        $storage = $this->getStorageFactory($container)->create($storageConfig);
 
-        return new AuthenticationService($adapter, $storage);
+        return new $requestedName($adapter, $storage);
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return AdapterFactory
+     */
+    public function getAdapterFactory(ContainerInterface $container): AdapterFactory
+    {
+        if (!$this->adapterFactory) {
+            $this->adapterFactory = new AdapterFactory($container);
+        }
+
+        return $this->adapterFactory;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     * @return StorageFactory
+     */
+    public function getStorageFactory(ContainerInterface $container): StorageFactory
+    {
+        if (!$this->storageFactory) {
+            $this->storageFactory = new StorageFactory($container);
+        }
+        return $this->storageFactory;
     }
 }

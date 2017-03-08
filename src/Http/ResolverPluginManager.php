@@ -7,6 +7,8 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication\Http;
 
 use Dot\Authentication\Factory\FileResolverFactory;
@@ -24,5 +26,13 @@ class ResolverPluginManager extends AbstractPluginManager
 
     protected $factories = [
         FileResolver::class => FileResolverFactory::class,
+    ];
+
+    protected $aliases = [
+        'file' => FileResolver::class,
+        'File' => FileResolver::class,
+        'fileresolver' => FileResolver::class,
+        'fileResolver' => FileResolver::class,
+        'FileResolver' => FileResolver::class,
     ];
 }

@@ -7,13 +7,13 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication\Factory;
 
-use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Storage\SessionStorage;
 use Interop\Container\ContainerInterface;
 use Zend\Session\ManagerInterface;
-use Zend\Session\SessionManager;
 
 /**
  * Class SessionStorageFactory
@@ -23,36 +23,24 @@ class SessionStorageFactory
 {
     /**
      * @param ContainerInterface $container
-     * @param $resolvedName
+     * @param $requestedName
      * @param array $options
      * @return SessionStorage
      */
-    public function __invoke(ContainerInterface $container, $resolvedName, array $options = [])
+    public function __invoke(ContainerInterface $container, string $requestedName, array $options = null)
     {
-        $namespace = isset($options['namespace']) ? $options['namespace'] : null;
-        $member = isset($options['member']) ? $options['member'] : null;
-
-        $sessionManager = isset($options['session_manager']) ? $options['session_manager'] : null;
-
-        $sessionManager = $container->has($sessionManager)
-            ? $container->get($sessionManager)
-            : $sessionManager;
-
-        if (is_string($sessionManager) && class_exists($sessionManager)) {
-            $sessionManager = new $sessionManager;
-        }
-
-        //lets try to get the default session manager from the container, if it is available
-        if (!$sessionManager) {
-            if ($container->has(ManagerInterface::class)) {
-                $sessionManager = $container->get(ManagerInterface::class);
+        $options = $options ?? [];
+        if (isset($options['session_manager']) && is_string($options['session_manager'])) {
+            if ($container->has($options['session_manager'])) {
+                $options['session_manager'] = $container->get($options['session_manager']);
+            } elseif (class_exists($options['session_manager'])) {
+                $class = $options['session_manager'];
+                $options['session_manager'] = new $class();
             }
+        } elseif ($container->has(ManagerInterface::class)) {
+            $options['session_manager'] = $container->get(ManagerInterface::class);
         }
 
-        if ($sessionManager && !$sessionManager instanceof SessionManager) {
-            throw new RuntimeException('Session storage session manager invalid');
-        }
-
-        return new SessionStorage($namespace, $member, $sessionManager);
+        return new $requestedName($options);
     }
 }

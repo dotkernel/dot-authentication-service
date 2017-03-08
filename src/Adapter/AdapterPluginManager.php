@@ -7,9 +7,11 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication\Adapter;
 
-use Dot\Authentication\Adapter\DbTable\CallbackCheckAdapter;
+use Dot\Authentication\Adapter\Db\CallbackCheckAdapter;
 use Dot\Authentication\Factory\CallbackCheckAdapterFactory;
 use Dot\Authentication\Factory\HttpAdapterFactory;
 use Zend\ServiceManager\AbstractPluginManager;
@@ -26,5 +28,20 @@ class AdapterPluginManager extends AbstractPluginManager
     protected $factories = [
         CallbackCheckAdapter::class => CallbackCheckAdapterFactory::class,
         HttpAdapter::class => HttpAdapterFactory::class,
+    ];
+
+    protected $aliases = [
+        'callbackcheck' => CallbackCheckAdapter::class,
+        'callbackCheck' => CallbackCheckAdapter::class,
+        'CallbackCheck' => CallbackCheckAdapter::class,
+        'callbackcheckadapter' => CallbackCheckAdapter::class,
+        'callbackCheckAdapter' => CallbackCheckAdapter::class,
+        'CallbackCheckAdapter' => CallbackCheckAdapter::class,
+
+        'http' => HttpAdapter::class,
+        'Http' => HttpAdapter::class,
+        'httpadapter' => HttpAdapter::class,
+        'httpAdapter' => HttpAdapter::class,
+        'HttpAdapter' => HttpAdapter::class,
     ];
 }

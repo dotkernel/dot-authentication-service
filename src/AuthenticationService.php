@@ -7,6 +7,8 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication;
 
 use Dot\Authentication\Adapter\AdapterInterface;
@@ -54,47 +56,32 @@ class AuthenticationService implements AuthenticationInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      * @return ResponseInterface
      */
-    public function challenge(ServerRequestInterface $request, ResponseInterface $response)
+    public function challenge(ServerRequestInterface $request): ResponseInterface
     {
         $this->request = $request;
-        $this->response = $response;
 
-
-        $this->adapter->prepare($request, $response);
+        $this->adapter->prepare($request);
         $challenge = $this->adapter->challenge();
 
-        if ($challenge && $challenge instanceof ResponseInterface) {
-            //get the WWW-authenticate header if any and add it to the current response
-            if ($challenge->hasHeader('WWW-Authenticate')) {
-                $response = $response->withAddedHeader(
-                    'WWW-Authenticate',
-                    $challenge->getHeader('WWW-Authenticate')
-                );
-            }
-        }
-
-        //return a 401 with authentication headers as added by adapters
-        return $response->withStatus(401);
+        return $challenge;
     }
 
     /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
-     * @return bool|AuthenticationResult|false|null
+     * @return AuthenticationResult
      */
-    public function authenticate(ServerRequestInterface $request, ResponseInterface $response)
+    public function authenticate(ServerRequestInterface $request): AuthenticationResult
     {
         $this->request = $request;
-        $this->response = $response;
 
         if ($request->getMethod() === 'OPTIONS') {
-            return false;
+            // let it pass, return success, but with no identity
+            return new AuthenticationResult(AuthenticationResult::SUCCESS);
         }
 
-        $this->adapter->prepare($request, $response);
+        $this->adapter->prepare($request);
 
         $result = $this->adapter->authenticate();
 
@@ -123,7 +110,7 @@ class AuthenticationService implements AuthenticationInterface
     /**
      * @return bool
      */
-    public function hasIdentity()
+    public function hasIdentity(): bool
     {
         return !$this->storage->isEmpty();
     }
@@ -138,22 +125,17 @@ class AuthenticationService implements AuthenticationInterface
 
     /**
      * @param IdentityInterface $identity
-     * @return $this
      */
     public function setIdentity(IdentityInterface $identity)
     {
         $this->storage->write($identity);
-        return $this;
     }
 
     /**
-     * @return mixed|null
+     * @return IdentityInterface
      */
-    public function getIdentity()
+    public function getIdentity(): ?IdentityInterface
     {
-        if ($this->storage->isEmpty()) {
-            return null;
-        }
         return $this->storage->read();
     }
 }

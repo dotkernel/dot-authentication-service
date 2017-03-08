@@ -7,6 +7,8 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Options\AuthenticationOptions;
@@ -20,10 +22,11 @@ class AuthenticationOptionsFactory
 {
     /**
      * @param ContainerInterface $container
+     * @param $requestedName
      * @return AuthenticationOptions
      */
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, string $requestedName)
     {
-        return new AuthenticationOptions($container->get('config')['dot_authentication']);
+        return new $requestedName($container->get('config')['dot_authentication']);
     }
 }

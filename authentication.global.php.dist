@@ -4,19 +4,21 @@ return [
     'dot_authentication' => [
         //required by the auth adapters, it may be optional for your custom adapters
         //specify the identity entity to use and its hydrator
-        'identity_class' => '\You\Identity\Class\Implementing\IdentityInterface',
-        'identity_hydrator_class' => 'Hydrator\Class\Implementing\HydratorInterface',
 
         //this is adapter specific
         //currently we support HTTP basic and digest
         //below is config template for callbackcheck adapter
         'adapter' => [
-            \Dot\Authentication\Adapter\DbTable\CallbackCheckAdapter::class => [
+            'type' => 'CallbackCheck',
+            'options' => [
                 // zend db adapter service name
-                'db_adapter' => 'database service name',
+                'adapter' => 'database service name',
+
+                'identity_prototype' => '\You\Identity\Class\Implementing\IdentityInterface',
+                'identity_hydrator' => 'Hydrator\Class\Implementing\HydratorInterface',
 
                 // your user table name
-                'table_name' => 'user table name',
+                'table' => 'user table name',
 
                 // what user fields should use for authentication(db fields)
                 'identity_columns' => ['username', 'email'],
@@ -35,25 +37,32 @@ return [
         //this is a HTTP basic adapter config example
         /*
         'adapter' => [
-            \Dot\Authentication\Adapter\HttpAdapter::class => [
-                'accept_schemes' => 'basic',
-                'realm' => 'api',
-                'resolvers' => [
-                    'basic' => [
-                        //name must be registered in the resolver manager
-                        'name' => \Zend\Authentication\Adapter\Http\FileResolver::class,
-                        'options' => [
-                            'path' => 'path/to/.httpasswd',
-                        ]
-                    ]
-                ]
+            'type' => 'Http',
+            'options' => [
+                'identity_prototype' => '\You\Identity\Class\Implementing\IdentityInterface',
+                'identity_hydrator' => 'Hydrator\Class\Implementing\HydratorInterface',
+
+                'config' => [
+                    'accept_schemes' => 'basic',
+                    'realm' => 'api',
+                ],
+
+                'basic_resolver' => [
+                    'name' => 'FileResolver',
+                    'options' => [
+                        'path' => 'path/to/.httpasswd',
+                    ],
+                ],
+
+                'digest_resolver' => [],
             ],
         ],
         */
 
         //storage specific options, example below, for session storage
         'storage' => [
-            \Dot\Authentication\Storage\SessionStorage::class => [
+            'type' => 'Session',
+            'options' => [
                 //session namespace
                 'namespace' => 'dot_auth',
 
@@ -72,13 +81,6 @@ return [
 
         'resolver_manager' => [
             //define custom http authentication resolvers here, through the resolver plugin manager
-        ],
-
-        //custom messages, to overwrite for example the default authentication results messages
-        'messages_options' => [
-            'messages' => [
-
-            ],
         ],
     ]
 ];

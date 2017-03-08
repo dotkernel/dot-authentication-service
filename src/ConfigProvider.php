@@ -7,6 +7,8 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication;
 
 use Dot\Authentication\Adapter\AdapterPluginManager;
@@ -21,7 +23,7 @@ use Dot\Authentication\Storage\StoragePluginManager;
 
 class ConfigProvider
 {
-    public function __invoke()
+    public function __invoke(): array
     {
         return [
             'dependencies' => $this->getDependencyConfig(),
@@ -37,28 +39,22 @@ class ConfigProvider
                 'storage_manager' => [],
 
                 'resolver_manager' => [],
-
-                'messages_options' => [
-                    'messages' => [],
-                ],
             ]
         ];
     }
 
-    public function getDependencyConfig()
+    public function getDependencyConfig(): array
     {
         return [
-            //default services
             'factories' => [
-                AuthenticationInterface::class => AuthenticationServiceFactory::class,
-
+                AuthenticationService::class => AuthenticationServiceFactory::class,
                 AdapterPluginManager::class => AdapterPluginManagerFactory::class,
-
                 ResolverPluginManager::class => ResolverPluginManagerFactory::class,
-
                 StoragePluginManager::class => StoragePluginManagerFactory::class,
-
                 AuthenticationOptions::class => AuthenticationOptionsFactory::class,
+            ],
+            'aliases' => [
+                AuthenticationInterface::class => AuthenticationService::class,
             ]
         ];
     }

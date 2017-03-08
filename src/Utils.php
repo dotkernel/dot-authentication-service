@@ -7,6 +7,8 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication;
 
 use Zend\Authentication\Result;
@@ -25,5 +27,15 @@ final class Utils
         Result::FAILURE_IDENTITY_NOT_FOUND => AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND,
         Result::FAILURE_UNCATEGORIZED => AuthenticationResult::FAILURE_UNCATEGORIZED,
         Result::SUCCESS => AuthenticationResult::SUCCESS
+    ];
+
+    public static $authCodeToMessage = [
+        AuthenticationResult::FAILURE => 'Authentication failure. Check your credentials',
+        AuthenticationResult::FAILURE_INVALID_CREDENTIALS => 'Authentication failure. Check your credentials',
+        AuthenticationResult::FAILURE_IDENTITY_AMBIGUOUS => 'Authentication failure. Check your credentials',
+        AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND => 'Authentication failure. Check your credentials',
+        AuthenticationResult::FAILURE_UNCATEGORIZED => 'Authentication failure. Check your credentials',
+        AuthenticationResult::FAILURE_MISSING_CREDENTIALS => 'Authentication failure. Missing credentials',
+        AuthenticationResult::SUCCESS => 'Welcome, you authenticated successfully'
     ];
 }

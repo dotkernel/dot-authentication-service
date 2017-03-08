@@ -44,17 +44,17 @@ An `AdapterInterface` is provided which must be implemented by all adapters. Als
 
 The AdapterInterface defines the following methods
 ```php
-public function prepare(ServerRequestInterface $request, ResponseInterface $response);
+public function prepare(ServerRequestInterface $request);
 ```
 Called internally by the authentication service, just before the authentication operation, in order to give the adapter a chance to prepare itself, by extracting the credentials from the request, in its specific manner.
 
 ```php
-public function authenticate();
+public function authenticate(): AuthenticationResult;
 ```
 Checks the credentials extracted from the previous step, against some backend. Should return an `AuthenticationResult`
 
 ```php
-public function challenge();
+public function challenge(): ResponseInterface;
 ```
 This method is not needed by all authentication implementation. It should return a ResponseInterface with status code 401 and a WWW-Authenticate header to indicate authentication is required.
 
@@ -107,98 +107,87 @@ Create a separate config file in your `config/autoload` directory, call it authe
 ##### authentication.global.php
 ```php
 return [
-    //all authentication config goes under this key
     'dot_authentication' => [
-        
-        //required by authentication adapters to hydrate the identity into an object
-        'identity_class' => '',
-        //the hydrator is optional, ClassMethods(false) will be used as default
-        'identity_hydrator_class' => '',
-        
-        //configure the authentication adapter to use, only one adapter is supported
-        //the key is the adapter name as registered in the AdapterPluginManager
+        //required by the auth adapters, it may be optional for your custom adapters
+        //specify the identity entity to use and its hydrator
+
+        //this is adapter specific
+        //currently we support HTTP basic and digest
+        //below is config template for callbackcheck adapter
         'adapter' => [
-        
-            //CallbackCheck adapter configuration example
-            \Dot\Authentication\Adapter\DbTable\CallbackCheckAdapter::class => [
-                //zend db adapter to use
-                'db_adapter' => 'database service name',
+            'type' => 'CallbackCheck',
+            'options' => [
+                // zend db adapter service name
+                'adapter' => 'database service name',
                 
-                //table name of the user entities
-                'table_name' => 'user table name',
+                'identity_prototype' => '\You\Identity\Class\Implementing\IdentityInterface',
+                'identity_hydrator' => 'Hydrator\Class\Implementing\HydratorInterface',
                 
-                //which user fields should be used to check authentication
+                // your user table name
+                'table' => 'user table name',
+                
+                // what user fields should use for authentication(db fields)
                 'identity_columns' => ['username', 'email'],
+
+                // name of the password db field
+                'credential_column' => 'password'
                 
-                //name of the password field
-                'credential_column' => 'password',
-                
-                //password checking callback, as a closure, service name of a callable or an invokable callable class
-                //we dont recommend using a closure, because config cannot be cached.
-                //the below example is given just to show you the callable signature
-                /*'callback_check' => function($hash_passwd, $password) {
-                    return $hash_password === md5($password);
-                }*/
+                // your password checking callback, use a closure, a service name of a callable or a callable class name
+                // we recommend using a service name or class name instead of closures, to be able to cache the config
+                // the below closure is just an example, to show you the callable signature
+                // 'callback_check' => function($hash_passwd, $password) {
+                //    return $hash_passwd === md5($password);
+                // }
             ],
         ],
-        
-        //OR HTTP basic adapter config example
+        //this is a HTTP basic adapter config example
         /*
         'adapter' => [
-            \Dot\Authentication\Adapter\HttpAdapter::class => [
-                'accept_schemes' => 'basic',
-                'realm' => 'api',
-                'resolvers' => [
-                    'basic' => [
-                        //name must be registered in the resolver manager
-                        'name' => \Zend\Authentication\Adapter\Http\FileResolver::class,
-                        'options' => [
-                            'path' => 'path/to/.httpasswd',
-                        ]
-                    ]
-                ]
+            'type' => 'Http',
+            'options' => [
+                'identity_prototype' => '\You\Identity\Class\Implementing\IdentityInterface',
+                'identity_hydrator' => 'Hydrator\Class\Implementing\HydratorInterface',
+                
+                'config' => [
+                    'accept_schemes' => 'basic',
+                    'realm' => 'api',
+                ],
+                
+                'basic_resolver' => [
+                    'name' => 'FileResolver',
+                    'options' => [
+                        'path' => 'path/to/.httpasswd',
+                    ],
+                ],
+                
+                'digest_resolver' => [],
             ],
         ],
         */
-        
-        //authentication storage configuration for a SessionStorage
+
+        //storage specific options, example below, for session storage
         'storage' => [
-            \Dot\Authentication\Storage\SessionStorage::class => [
+            'type' => 'Session',
+            'options' => [
                 //session namespace
                 'namespace' => 'dot_auth',
-
+                
                 //what session member to use
                 'member' => 'storage'
             ],
         ],
-        
+
         'adapter_manager' => [
             //register custom adapters here, like you would do in a normal container
         ],
-
+        
         'storage_manager' => [
             //register custom storage adapters
         ],
-
+        
         'resolver_manager' => [
             //define custom http authentication resolvers here, through the resolver plugin manager
         ],
-
-        //custom messages, to overwrite for example the default authentication results messages
-        'messages_options' => [
-            'messages' => [
-                //these are the default messages this module can output, overwrite as needed
-                //we don't recommend giving too much information in the authentication failure message
-                //AuthenticationResult::FAILURE => 'Authentication failure. Check your credentials',
-                //AuthenticationResult::FAILURE_INVALID_CREDENTIALS => 'Authentication failure. Check your credentials',
-                //AuthenticationResult::FAILURE_IDENTITY_AMBIGUOUS => 'Authentication failure. Check your credentials',
-                //AuthenticationResult::FAILURE_IDENTITY_NOT_FOUND => 'Authentication failure. Check your credentials',
-                //AuthenticationResult::FAILURE_UNCATEGORIZED => 'Authentication failure. Check your credentials',
-                //AuthenticationResult::SUCCESS => 'Welcome, you authenticated successfully'
-            ],
-        ],
-        
-    ],
-    
+    ]
 ];
 ```

@@ -7,18 +7,20 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication\Adapter;
 
 use Dot\Authentication\AuthenticationResult;
+use Dot\Authentication\Exception\InvalidArgumentException;
 use Dot\Authentication\Exception\RuntimeException;
-use Dot\Authentication\Identity\IdentityInterface;
-use Dot\Authentication\Options\AuthenticationOptions;
 use Dot\Authentication\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\Adapter\Http;
 use Zend\Authentication\Adapter\Http\ResolverInterface;
 use Zend\Authentication\Result;
+use Zend\Diactoros\Response;
 use Zend\Http\Response as HttpResponse;
 use Zend\Psr7Bridge\Psr7Response;
 use Zend\Psr7Bridge\Psr7ServerRequest;
@@ -32,64 +34,135 @@ class HttpAdapter extends AbstractAdapter
     /** @var Http */
     protected $zendHttpAdapter;
 
-    /** @var  AuthenticationOptions */
-    protected $options;
+    /** @var  array */
+    protected $config;
+
+    /** @var  ResolverInterface */
+    protected $basicResolver;
+
+    /** @var  ResolverInterface */
+    protected $digestResolver;
 
     /**
      * HttpAdapter constructor.
-     * @param AuthenticationOptions $options
-     * @param array $config
-     * @param ResolverInterface|null $basicResolver
-     * @param ResolverInterface|null $digestResolver
+     * @param array $options
+     *
+     * Valid options are:
+     * - identity_prototype : identity class which will be hydrated
+     * - identity_hydrator : instance of HydratorInterface used to hydrate the identity object
+     * - config : config array as required by the underlying zend Http adapter
+     * - basic_resolver : ResolverInterface instance to use for basic http authentication
+     * - digest_resolver : ResolverInterface instance to use for digest http authentication
      */
-    public function __construct(
-        AuthenticationOptions $options,
-        array $config,
-        ResolverInterface $basicResolver = null,
-        ResolverInterface $digestResolver = null
-    ) {
-        $this->options = $options;
-        $this->zendHttpAdapter = new Http($config);
+    public function __construct(array $options = null)
+    {
+        $options = $options ?? [];
+        parent::__construct($options);
 
-        if ($basicResolver) {
-            $this->zendHttpAdapter->setBasicResolver($basicResolver);
+        if (isset($options['config']) && is_array($options['config'])) {
+            $this->setConfig($options['config']);
         }
 
-        if ($digestResolver) {
-            $this->zendHttpAdapter->setDigestResolver($digestResolver);
+        if (isset($options['basic_resolver']) && $options['basic_resolver'] instanceof ResolverInterface) {
+            $this->setBasicResolver($options['basic_resolver']);
+        }
+
+        if (isset($options['digest_resolver']) && $options['digest_resolver'] instanceof ResolverInterface) {
+            $this->setDigestResolver($options['digest_resolver']);
+        }
+
+        $this->validate();
+
+        $this->zendHttpAdapter = new Http($this->getConfig());
+
+        if ($this->getBasicResolver()) {
+            $this->zendHttpAdapter->setBasicResolver($this->getBasicResolver());
+        }
+
+        if ($this->getDigestResolver()) {
+            $this->zendHttpAdapter->setDigestResolver($this->getDigestResolver());
+        }
+    }
+
+    protected function validate()
+    {
+        if (empty($this->getConfig())) {
+            throw new InvalidArgumentException('Http adapter config not provided');
+        }
+
+        if (!$this->getBasicResolver() && !$this->getDigestResolver()) {
+            throw new InvalidArgumentException('At least one http resolver must be provided');
         }
     }
 
     /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
+    /**
+     * @param array $config
+     */
+    public function setConfig(array $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
+     * @return ResolverInterface
+     */
+    public function getBasicResolver(): ?ResolverInterface
+    {
+        return $this->basicResolver;
+    }
+
+    /**
+     * @param ResolverInterface $basicResolver
+     */
+    public function setBasicResolver(ResolverInterface $basicResolver)
+    {
+        $this->basicResolver = $basicResolver;
+    }
+
+    /**
+     * @return ResolverInterface
+     */
+    public function getDigestResolver(): ?ResolverInterface
+    {
+        return $this->digestResolver;
+    }
+
+    /**
+     * @param ResolverInterface $digestResolver
+     */
+    public function setDigestResolver(ResolverInterface $digestResolver)
+    {
+        $this->digestResolver = $digestResolver;
+    }
+
+    /**
      * @param ServerRequestInterface $request
-     * @param ResponseInterface $response
      * @return void
      */
-    public function prepare(ServerRequestInterface $request, ResponseInterface $response)
+    public function prepare(ServerRequestInterface $request)
     {
-        $this->request = $request;
-        $this->response = $response;
+        $this->setRequest($request);
 
         //convert from psr7 to zend-http
         $zfRequest = Psr7ServerRequest::toZend($request);
-        $zfResponse = Psr7Response::toZend($response);
+        $zfResponse = Psr7Response::toZend(new Response());
 
         $this->zendHttpAdapter->setRequest($zfRequest);
         $this->zendHttpAdapter->setResponse($zfResponse);
     }
 
     /**
-     * @return Http
-     */
-    public function getZendHttpAdapter()
-    {
-        return $this->zendHttpAdapter;
-    }
-
-    /**
      * @return ResponseInterface
      */
-    public function challenge()
+    public function challenge(): ResponseInterface
     {
         $this->zendHttpAdapter->challengeClient();
         $response = Psr7Response::fromZend($this->zendHttpAdapter->getResponse());
@@ -98,21 +171,31 @@ class HttpAdapter extends AbstractAdapter
     }
 
     /**
-     * @return bool|AuthenticationResult
+     * @return AuthenticationResult
      * @throws \Exception
      */
-    public function authenticate()
+    public function authenticate(): AuthenticationResult
     {
         //return null if no auth info provided, consider guest
         if ($this->request &&
             !$this->request->hasHeader('Authorization') &&
             !$this->request->hasHeader('Proxy-Authorization')
         ) {
-            return false;
+            return new AuthenticationResult(
+                AuthenticationResult::FAILURE_MISSING_CREDENTIALS,
+                Utils::$authCodeToMessage[AuthenticationResult::FAILURE_MISSING_CREDENTIALS]
+            );
         }
 
         $result = $this->zendHttpAdapter->authenticate();
-        return $this->marshalZendResult($result);
+        if ($result) {
+            return $this->marshalZendResult($result);
+        }
+
+        return new AuthenticationResult(
+            AuthenticationResult::FAILURE_UNCATEGORIZED,
+            Utils::$authCodeToMessage[AuthenticationResult::FAILURE_UNCATEGORIZED]
+        );
     }
 
     /**
@@ -121,20 +204,13 @@ class HttpAdapter extends AbstractAdapter
      *
      * @throws \Exception
      */
-    protected function marshalZendResult(Result $result)
+    protected function marshalZendResult(Result $result): AuthenticationResult
     {
-        //get the zf2 messages and extract info into the psr7 messages
-        $zfResponse = $this->zendHttpAdapter->getResponse();
-        $zfRequest = $this->zendHttpAdapter->getRequest();
-
-        $this->request = Psr7ServerRequest::fromZend($zfRequest);
-        $this->response = Psr7Response::fromZend($zfResponse);
-
         $code = Utils::$authResultCodeMap[$result->getCode()];
         //we'll give the user only general error info, to prevent user enumeration attacks
-        $message = $this->options->getMessagesOptions()->getMessage($code);
-        $identity = null;
+        $message = Utils::$authCodeToMessage[$code];
 
+        $identity = null;
         if ($result->isValid()) {
             $identity = $result->getIdentity();
             //try to convert to array if not already...
@@ -143,20 +219,25 @@ class HttpAdapter extends AbstractAdapter
                 throw new RuntimeException("Missing identity object or cannot be converted to array");
             }
 
-            if ($this->identityPrototype && $this->identityHydrator) {
-                $identity = $this->identityHydrator->hydrate($identity, $this->identityPrototype);
-                if (!$identity instanceof IdentityInterface) {
-                    throw new RuntimeException(sprintf(
-                        'Identity must be an instance of %s, "%s given"',
-                        IdentityInterface::class,
-                        is_object($identity) ? get_class($identity) : gettype($identity)
-                    ));
-                }
-            } else {
-                throw new RuntimeException("Missing required identity prototype and/or identity hydrator");
-            }
+            $identity = $this->hydrateIdentity($identity);
         }
 
-        return new AuthenticationResult($code, $this->request, $this->response, $identity, $message);
+        return new AuthenticationResult($code, $message, $identity);
+    }
+
+    /**
+     * @return Http
+     */
+    public function getZendHttpAdapter(): Http
+    {
+        return $this->zendHttpAdapter;
+    }
+
+    /**
+     * @param Http $zendHttpAdapter
+     */
+    public function setZendHttpAdapter(Http $zendHttpAdapter)
+    {
+        $this->zendHttpAdapter = $zendHttpAdapter;
     }
 }

@@ -7,9 +7,10 @@
  * Time: 12:37 AM
  */
 
+declare(strict_types = 1);
+
 namespace Dot\Authentication\Options;
 
-use Dot\Authentication\Exception\InvalidArgumentException;
 use Zend\Stdlib\AbstractOptions;
 
 /**
@@ -18,51 +19,56 @@ use Zend\Stdlib\AbstractOptions;
  */
 class AuthenticationOptions extends AbstractOptions
 {
-    /** @var  array|mixed */
+    /** @var  array */
     protected $adapter;
 
-    /** @var  mixed */
+    /** @var  array */
     protected $storage;
 
     /** @var  string */
-    protected $identityClass;
+    protected $identityPrototype;
 
     /** @var  string */
-    protected $identityHydratorClass;
-
-    /** @var  MessagesOptions */
-    protected $messagesOptions;
-
-    protected $__strictMode__ = false;
+    protected $identityHydrator;
 
     /**
-     * @return mixed
+     * AuthenticationOptions constructor.
+     * @param null $options
      */
-    public function getAdapter()
+    public function __construct($options = null)
+    {
+        $this->__strictMode__ = false;
+        parent::__construct($options);
+    }
+
+    /**
+     * @return array
+     */
+    public function getAdapter(): array
     {
         return $this->adapter;
     }
 
     /**
-     * @param mixed $adapter
+     * @param array $adapter
      */
-    public function setAdapter($adapter)
+    public function setAdapter(array $adapter)
     {
         $this->adapter = $adapter;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getStorage()
+    public function getStorage(): array
     {
         return $this->storage;
     }
 
     /**
-     * @param mixed $storage
+     * @param array $storage
      */
-    public function setStorage($storage)
+    public function setStorage(array $storage)
     {
         $this->storage = $storage;
     }
@@ -70,63 +76,32 @@ class AuthenticationOptions extends AbstractOptions
     /**
      * @return string
      */
-    public function getIdentityClass()
+    public function getIdentityPrototype(): string
     {
-        return $this->identityClass;
+        return $this->identityPrototype;
     }
 
     /**
-     * @param string $identityClass
+     * @param string $identityPrototype
      */
-    public function setIdentityClass($identityClass)
+    public function setIdentityPrototype(string $identityPrototype)
     {
-        $this->identityClass = $identityClass;
+        $this->identityPrototype = $identityPrototype;
     }
 
     /**
      * @return string
      */
-    public function getIdentityHydratorClass()
+    public function getIdentityHydrator(): string
     {
-        return $this->identityHydratorClass;
+        return $this->identityHydrator;
     }
 
     /**
-     * @param string $identityHydratorClass
+     * @param string $identityHydrator
      */
-    public function setIdentityHydratorClass($identityHydratorClass)
+    public function setIdentityHydrator(string $identityHydrator)
     {
-        $this->identityHydratorClass = $identityHydratorClass;
-    }
-
-    /**
-     * @return MessagesOptions
-     */
-    public function getMessagesOptions()
-    {
-        if (!$this->messagesOptions) {
-            $this->setMessagesOptions([]);
-        }
-        return $this->messagesOptions;
-    }
-
-    /**
-     * @param MessagesOptions|array $messagesOptions
-     * @return AuthenticationOptions
-     */
-    public function setMessagesOptions($messagesOptions)
-    {
-        if (is_array($messagesOptions)) {
-            $this->messagesOptions = new MessagesOptions($messagesOptions);
-        } elseif ($messagesOptions instanceof MessagesOptions) {
-            $this->messagesOptions = $messagesOptions;
-        } else {
-            throw new InvalidArgumentException(sprintf(
-                'MessageOptions should be an array or an %s object. %s provided.',
-                MessagesOptions::class,
-                is_object($messagesOptions) ? get_class($messagesOptions) : gettype($messagesOptions)
-            ));
-        }
-        return $this;
+        $this->identityHydrator = $identityHydrator;
     }
 }
