@@ -98,7 +98,7 @@ class CallbackCheckAdapter extends AbstractAdapter
         );
     }
 
-    protected function validate(): void
+    protected function validate()
     {
         if (!$this->adapter) {
             throw new RuntimeException('Db adapter is required and must be an instance of ' . Adapter::class);
@@ -120,7 +120,7 @@ class CallbackCheckAdapter extends AbstractAdapter
     /**
      * @param ServerRequestInterface $request
      */
-    public function prepare(ServerRequestInterface $request): void
+    public function prepare(ServerRequestInterface $request)
     {
         $this->request = $request;
 

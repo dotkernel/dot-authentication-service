@@ -25,7 +25,7 @@ interface AdapterInterface
      * @param ServerRequestInterface $request
      * @return void
      */
-    public function prepare(ServerRequestInterface $request): void;
+    public function prepare(ServerRequestInterface $request);
 
     /**
      * @return AuthenticationResult

@@ -84,7 +84,7 @@ class HttpAdapter extends AbstractAdapter
         }
     }
 
-    protected function validate(): void
+    protected function validate()
     {
         if (empty($this->getConfig())) {
             throw new InvalidArgumentException('Http adapter config not provided');
@@ -147,7 +147,7 @@ class HttpAdapter extends AbstractAdapter
      * @param ServerRequestInterface $request
      * @return void
      */
-    public function prepare(ServerRequestInterface $request): void
+    public function prepare(ServerRequestInterface $request)
     {
         $this->setRequest($request);
 
