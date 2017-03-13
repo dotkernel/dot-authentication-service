@@ -11,7 +11,7 @@ namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Adapter\HttpAdapter;
 use Dot\Authentication\Http\ResolverPluginManager;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class HttpAdapterFactory

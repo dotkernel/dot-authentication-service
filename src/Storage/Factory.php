@@ -10,7 +10,7 @@ declare(strict_types = 1);
 namespace Dot\Authentication\Storage;
 
 use Dot\Authentication\Exception\RuntimeException;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class StorageFactory
