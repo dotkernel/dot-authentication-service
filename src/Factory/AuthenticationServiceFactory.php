@@ -16,7 +16,7 @@ use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Options\AuthenticationOptions;
 use Dot\Authentication\Storage\Factory as StorageFactory;
 use Dot\Authentication\Storage\StoragePluginManager;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 
 /**
  * Class AuthenticationServiceFactory

@@ -10,7 +10,7 @@ declare(strict_types = 1);
 namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Exception\RuntimeException;
-use Interop\Container\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Zend\Authentication\Adapter\Http\FileResolver;
 
 /**
