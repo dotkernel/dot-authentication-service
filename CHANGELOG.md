@@ -1,4 +1,4 @@
-## Unreleased
+## Unreleased(0.2.0)
 
 ### Changed
 * Updated factories to typehint PSR11 container
