@@ -1,4 +1,4 @@
-## Unreleased
+## 0.2.0 - 2017-03-15
 
 ### Changed
 * Updated factories to typehint PSR11 container
