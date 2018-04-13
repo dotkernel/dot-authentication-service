@@ -1,3 +1,21 @@
+## 1.0.0 - 2018-04-12
+
+### Changed
+* Update `dotkernel/dot-helpers` to ^1.0
+
+### Added
+* Nothing
+
+### Deprecated
+* Nothing
+
+### Removed
+* HTTP Interop middleware support
+
+### Fixed
+* Nothing
+
+
 ## 0.2.0 - 2017-03-15
 
 ### Changed
