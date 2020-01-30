@@ -13,7 +13,7 @@ use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Identity\IdentityInterface;
 use Dot\Authentication\Options\AuthenticationOptions;
 use Psr\Container\ContainerInterface;
-use Zend\Hydrator\HydratorPluginManager;
+use Laminas\Hydrator\HydratorPluginManager;
 
 /**
  * Class AbstractAdapterFactory

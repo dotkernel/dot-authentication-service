@@ -13,7 +13,7 @@ namespace Dot\Authentication\Storage;
  * Interface StorageInterface
  * @package Dot\Authentication\Storage
  */
-interface StorageInterface extends \Zend\Authentication\Storage\StorageInterface
+interface StorageInterface extends \Laminas\Authentication\Storage\StorageInterface
 {
 
 }

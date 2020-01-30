@@ -10,8 +10,8 @@ declare(strict_types = 1);
 namespace Dot\Authentication\Storage;
 
 use Dot\Authentication\Factory\SessionStorageFactory;
-use Zend\ServiceManager\AbstractPluginManager;
-use Zend\ServiceManager\Factory\InvokableFactory;
+use Laminas\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\Factory\InvokableFactory;
 
 /**
  * Class StoragePluginManager

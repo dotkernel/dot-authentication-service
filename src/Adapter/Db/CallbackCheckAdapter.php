@@ -15,10 +15,10 @@ use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Authentication\Adapter\DbTable\CallbackCheckAdapter as ZendCallbackCheckAdapter;
-use Zend\Authentication\Result;
-use Zend\Db\Adapter\Adapter;
-use Zend\Diactoros\Response\EmptyResponse;
+use Laminas\Authentication\Adapter\DbTable\CallbackCheckAdapter as LaminasCallbackCheckAdapter;
+use Laminas\Authentication\Result;
+use Laminas\Db\Adapter\Adapter;
+use Laminas\Diactoros\Response\EmptyResponse;
 
 /**
  * Class CallbackCheck
@@ -41,8 +41,8 @@ class CallbackCheckAdapter extends AbstractAdapter
     /** @var  callable */
     protected $callbackCheck;
 
-    /** @var  ZendCallbackCheckAdapter */
-    protected $zendCallbackAdapter;
+    /** @var  LaminasCallbackCheckAdapter */
+    protected $laminasCallbackAdapter;
 
     /** @var  DbCredentials */
     protected $credentials;
@@ -54,7 +54,7 @@ class CallbackCheckAdapter extends AbstractAdapter
      * Valid options are
      * - identity_prototype : identity class which will be hydrated
      * - identity_hydrator : instance of HydratorInterface used to hydrate the identity object
-     * - adapter : A Zend\Db\Adapter\Adapter instance
+     * - adapter : A Laminas\Db\Adapter\Adapter instance
      * - table: table name
      * - identity_columns: array containing column names used to authenticate
      * - credential_column : string value representing the column name of the credential
@@ -87,7 +87,7 @@ class CallbackCheckAdapter extends AbstractAdapter
 
         $this->validate();
 
-        $this->zendCallbackAdapter = new ZendCallbackCheckAdapter(
+        $this->laminasCallbackAdapter = new LaminasCallbackCheckAdapter(
             $this->adapter,
             $this->table,
             $this->identityColumns[0],
@@ -179,23 +179,23 @@ class CallbackCheckAdapter extends AbstractAdapter
 
         //go over the identities and stop if one is found
         foreach ($identityColumns as $identityColumn) {
-            $this->zendCallbackAdapter->setIdentityColumn($identityColumn);
-            $this->zendCallbackAdapter->setCredentialColumn($credentialColumn);
+            $this->laminasCallbackAdapter->setIdentityColumn($identityColumn);
+            $this->laminasCallbackAdapter->setCredentialColumn($credentialColumn);
 
-            $this->zendCallbackAdapter->setIdentity($this->credentials->getIdentity());
-            $this->zendCallbackAdapter->setCredential($this->credentials->getCredential());
+            $this->laminasCallbackAdapter->setIdentity($this->credentials->getIdentity());
+            $this->laminasCallbackAdapter->setCredential($this->credentials->getCredential());
 
             //continue looping if its not valid and identity is not found
             //it will break if credentials invalid is received, as we suppose
             // the identity column was good, but credentials were wrong
-            $result = $this->zendCallbackAdapter->authenticate();
+            $result = $this->laminasCallbackAdapter->authenticate();
             if ($result->isValid() || $result->getCode() !== Result::FAILURE_IDENTITY_NOT_FOUND) {
                 break;
             }
         }
 
         if ($result) {
-            return $this->marshalZendResult($result);
+            return $this->marshalLaminasResult($result);
         }
 
         return new AuthenticationResult(
@@ -257,7 +257,7 @@ class CallbackCheckAdapter extends AbstractAdapter
      * @return AuthenticationResult
      * @throws \Exception
      */
-    protected function marshalZendResult(Result $result): AuthenticationResult
+    protected function marshalLaminasResult(Result $result): AuthenticationResult
     {
         $code = Utils::$authResultCodeMap[$result->getCode()];
         //we'll give the user only general error info, to prevent user enumeration attacks
@@ -267,7 +267,7 @@ class CallbackCheckAdapter extends AbstractAdapter
         if ($result->isValid()) {
             // get the identity object from the adapter,
             // as the underlying result identity does not store the entire entity
-            $identity = $this->zendCallbackAdapter->getResultRowObject(null, [$this->credentialColumn]);
+            $identity = $this->laminasCallbackAdapter->getResultRowObject(null, [$this->credentialColumn]);
             //we need an array, so try to convert...
             $identity = (array)$identity;
             if (empty($identity)) {
@@ -329,18 +329,18 @@ class CallbackCheckAdapter extends AbstractAdapter
     }
 
     /**
-     * @return ZendCallbackCheckAdapter
+     * @return LaminasCallbackCheckAdapter
      */
-    public function getZendCallbackAdapter(): ZendCallbackCheckAdapter
+    public function getLaminasCallbackAdapter(): LaminasCallbackCheckAdapter
     {
-        return $this->zendCallbackAdapter;
+        return $this->laminasCallbackAdapter;
     }
 
     /**
-     * @param ZendCallbackCheckAdapter $zendCallbackAdapter
+     * @param LaminasCallbackCheckAdapter $laminasCallbackAdapter
      */
-    public function setZendCallbackAdapter(ZendCallbackCheckAdapter $zendCallbackAdapter)
+    public function setLaminasCallbackAdapter(LaminasCallbackCheckAdapter $laminasCallbackAdapter)
     {
-        $this->zendCallbackAdapter = $zendCallbackAdapter;
+        $this->laminasCallbackAdapter = $laminasCallbackAdapter;
     }
 }

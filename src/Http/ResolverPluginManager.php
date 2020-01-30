@@ -10,9 +10,9 @@ declare(strict_types = 1);
 namespace Dot\Authentication\Http;
 
 use Dot\Authentication\Factory\FileResolverFactory;
-use Zend\Authentication\Adapter\Http\FileResolver;
-use Zend\Authentication\Adapter\Http\ResolverInterface;
-use Zend\ServiceManager\AbstractPluginManager;
+use Laminas\Authentication\Adapter\Http\FileResolver;
+use Laminas\Authentication\Adapter\Http\ResolverInterface;
+use Laminas\ServiceManager\AbstractPluginManager;
 
 /**
  * Class ResolverPluginManager

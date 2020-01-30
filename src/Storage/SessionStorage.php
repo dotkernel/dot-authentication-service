@@ -9,8 +9,8 @@ declare(strict_types = 1);
 
 namespace Dot\Authentication\Storage;
 
-use Zend\Authentication\Storage\Session;
-use Zend\Session\ManagerInterface;
+use Laminas\Authentication\Storage\Session;
+use Laminas\Session\ManagerInterface;
 
 /**
  * Class SessionStorage
@@ -25,7 +25,7 @@ class SessionStorage extends Session implements StorageInterface
      * Valid options are:
      * - namespace : session namespace name used to store identity
      * - member: session container name to use
-     * - session_manager: A zend-session ManagerInterface to use
+     * - session_manager: A laminas-session ManagerInterface to use
      */
     public function __construct(array $options = null)
     {

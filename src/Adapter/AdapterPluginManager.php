@@ -12,7 +12,7 @@ namespace Dot\Authentication\Adapter;
 use Dot\Authentication\Adapter\Db\CallbackCheckAdapter;
 use Dot\Authentication\Factory\CallbackCheckAdapterFactory;
 use Dot\Authentication\Factory\HttpAdapterFactory;
-use Zend\ServiceManager\AbstractPluginManager;
+use Laminas\ServiceManager\AbstractPluginManager;
 
 /**
  * Class AdapterPluginManager

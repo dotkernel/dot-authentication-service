@@ -15,13 +15,13 @@ use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Authentication\Adapter\Http;
-use Zend\Authentication\Adapter\Http\ResolverInterface;
-use Zend\Authentication\Result;
-use Zend\Diactoros\Response;
-use Zend\Http\Response as HttpResponse;
-use Zend\Psr7Bridge\Psr7Response;
-use Zend\Psr7Bridge\Psr7ServerRequest;
+use Laminas\Authentication\Adapter\Http;
+use Laminas\Authentication\Adapter\Http\ResolverInterface;
+use Laminas\Authentication\Result;
+use Laminas\Diactoros\Response;
+use Laminas\Http\Response as HttpResponse;
+use Laminas\Psr7Bridge\Psr7Response;
+use Laminas\Psr7Bridge\Psr7ServerRequest;
 
 /**
  * Class HttpAdapter
@@ -30,7 +30,7 @@ use Zend\Psr7Bridge\Psr7ServerRequest;
 class HttpAdapter extends AbstractAdapter
 {
     /** @var Http */
-    protected $zendHttpAdapter;
+    protected $laminasHttpAdapter;
 
     /** @var  array */
     protected $config;
@@ -48,7 +48,7 @@ class HttpAdapter extends AbstractAdapter
      * Valid options are:
      * - identity_prototype : identity class which will be hydrated
      * - identity_hydrator : instance of HydratorInterface used to hydrate the identity object
-     * - config : config array as required by the underlying zend Http adapter
+     * - config : config array as required by the underlying laminas Http adapter
      * - basic_resolver : ResolverInterface instance to use for basic http authentication
      * - digest_resolver : ResolverInterface instance to use for digest http authentication
      */
@@ -71,14 +71,14 @@ class HttpAdapter extends AbstractAdapter
 
         $this->validate();
 
-        $this->zendHttpAdapter = new Http($this->getConfig());
+        $this->laminasHttpAdapter = new Http($this->getConfig());
 
         if ($this->getBasicResolver()) {
-            $this->zendHttpAdapter->setBasicResolver($this->getBasicResolver());
+            $this->laminasHttpAdapter->setBasicResolver($this->getBasicResolver());
         }
 
         if ($this->getDigestResolver()) {
-            $this->zendHttpAdapter->setDigestResolver($this->getDigestResolver());
+            $this->laminasHttpAdapter->setDigestResolver($this->getDigestResolver());
         }
     }
 
@@ -149,12 +149,12 @@ class HttpAdapter extends AbstractAdapter
     {
         $this->setRequest($request);
 
-        //convert from psr7 to zend-http
-        $zfRequest = Psr7ServerRequest::toZend($request);
-        $zfResponse = Psr7Response::toZend(new Response());
+        //convert from psr7 to laminas-http
+        $zfRequest = Psr7ServerRequest::toLaminas($request);
+        $zfResponse = Psr7Response::toLaminas(new Response());
 
-        $this->zendHttpAdapter->setRequest($zfRequest);
-        $this->zendHttpAdapter->setResponse($zfResponse);
+        $this->laminasHttpAdapter->setRequest($zfRequest);
+        $this->laminasHttpAdapter->setResponse($zfResponse);
     }
 
     /**
@@ -162,8 +162,8 @@ class HttpAdapter extends AbstractAdapter
      */
     public function challenge(): ResponseInterface
     {
-        $this->zendHttpAdapter->challengeClient();
-        $response = Psr7Response::fromZend($this->zendHttpAdapter->getResponse());
+        $this->laminasHttpAdapter->challengeClient();
+        $response = Psr7Response::fromLaminas($this->laminasHttpAdapter->getResponse());
 
         return $response;
     }
@@ -185,9 +185,9 @@ class HttpAdapter extends AbstractAdapter
             );
         }
 
-        $result = $this->zendHttpAdapter->authenticate();
+        $result = $this->laminasHttpAdapter->authenticate();
         if ($result) {
-            return $this->marshalZendResult($result);
+            return $this->marshalLaminasResult($result);
         }
 
         return new AuthenticationResult(
@@ -202,7 +202,7 @@ class HttpAdapter extends AbstractAdapter
      *
      * @throws \Exception
      */
-    protected function marshalZendResult(Result $result): AuthenticationResult
+    protected function marshalLaminasResult(Result $result): AuthenticationResult
     {
         $code = Utils::$authResultCodeMap[$result->getCode()];
         //we'll give the user only general error info, to prevent user enumeration attacks
@@ -226,16 +226,16 @@ class HttpAdapter extends AbstractAdapter
     /**
      * @return Http
      */
-    public function getZendHttpAdapter(): Http
+    public function getLaminasHttpAdapter(): Http
     {
-        return $this->zendHttpAdapter;
+        return $this->laminasHttpAdapter;
     }
 
     /**
-     * @param Http $zendHttpAdapter
+     * @param Http $laminasHttpAdapter
      */
-    public function setZendHttpAdapter(Http $zendHttpAdapter)
+    public function setLaminasHttpAdapter(Http $laminasHttpAdapter)
     {
-        $this->zendHttpAdapter = $zendHttpAdapter;
+        $this->laminasHttpAdapter = $laminasHttpAdapter;
     }
 }

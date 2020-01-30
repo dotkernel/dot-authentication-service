@@ -9,7 +9,7 @@ declare(strict_types = 1);
 
 namespace Dot\Authentication\Storage;
 
-use Zend\Authentication\Storage\NonPersistent;
+use Laminas\Authentication\Storage\NonPersistent;
 
 /**
  * Class NonPersistentStorage

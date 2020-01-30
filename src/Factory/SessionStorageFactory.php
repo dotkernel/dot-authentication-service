@@ -11,7 +11,7 @@ namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Storage\SessionStorage;
 use Psr\Container\ContainerInterface;
-use Zend\Session\ManagerInterface;
+use Laminas\Session\ManagerInterface;
 
 /**
  * Class SessionStorageFactory

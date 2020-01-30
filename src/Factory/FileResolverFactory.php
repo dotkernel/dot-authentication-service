@@ -11,7 +11,7 @@ namespace Dot\Authentication\Factory;
 
 use Dot\Authentication\Exception\RuntimeException;
 use Psr\Container\ContainerInterface;
-use Zend\Authentication\Adapter\Http\FileResolver;
+use Laminas\Authentication\Adapter\Http\FileResolver;
 
 /**
  * Class FileResolverFactory

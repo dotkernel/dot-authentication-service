@@ -14,8 +14,8 @@ use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Identity\IdentityInterface;
 use Dot\Authentication\Options\AuthenticationOptions;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Hydrator\ClassMethods;
-use Zend\Hydrator\HydratorInterface;
+use Laminas\Hydrator\ClassMethods;
+use Laminas\Hydrator\HydratorInterface;
 
 /**
  * Class AbstractAdapter

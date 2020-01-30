@@ -9,7 +9,7 @@ declare(strict_types = 1);
 
 namespace Dot\Authentication;
 
-use Zend\Authentication\Result;
+use Laminas\Authentication\Result;
 
 /**
  * Class Utils
