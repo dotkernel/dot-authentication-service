@@ -13,8 +13,8 @@ use Dot\Authentication\Exception\InvalidArgumentException;
 use Dot\Authentication\Exception\RuntimeException;
 use Dot\Authentication\Identity\IdentityInterface;
 use Dot\Authentication\Options\AuthenticationOptions;
+use Laminas\Hydrator\ClassMethodsHydrator;
 use Psr\Http\Message\ServerRequestInterface;
-use Laminas\Hydrator\ClassMethods;
 use Laminas\Hydrator\HydratorInterface;
 
 /**
@@ -121,7 +121,7 @@ abstract class AbstractAdapter implements AdapterInterface
     public function getIdentityHydrator(): HydratorInterface
     {
         if (!$this->identityHydrator instanceof HydratorInterface) {
-            $this->identityHydrator = new ClassMethods(false);
+            $this->identityHydrator = new ClassMethodsHydrator(false);
         }
         return $this->identityHydrator;
     }
