@@ -2,6 +2,13 @@
 
 Concrete authentication service implementation of `\Dot\Authentication\AuthenticationInterface` built using [laminas-authentication](https://github.com/laminas/laminas-authentication) authentication and storage adapters. We advise you to have a quick look at how laminas authentication works, by visiting the [documentation](https://docs.laminas.dev/laminas-authentication/)
 
+![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-authentication-service)
+[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-authentication-service)](https://github.com/dotkernel/dot-authentication-service/blob/2.0.2/LICENSE.md)
+
+# NOTE
+
+> **dot-authentication-service** is **archived** and will receive no further development!
+
 ## Installation
 
 Run the following command in your project directory
