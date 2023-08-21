@@ -1,6 +1,6 @@
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-authentication-service)
 [![GitHub license](https://img.shields.io/github/license/dotkernel/dot-authentication-service)](https://github.com/dotkernel/dot-authentication-service/blob/2.0.2/LICENSE.md)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-authentication-service/2.9.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-authentication-service/2.9.1)
 
 ## Note
 > **dot-authentication-service**  is in **maintenance** mode.
@@ -93,7 +93,7 @@ After extracting the credentials into a `DbCredentials` class, set this as a $re
 ```php
 $request = $request->withAttribute(DbCredentials::class, $dbCredentials);
 ```
- 
+
 ##### Identity prototype and hydrator
 Both these adapters require an identity prototype object and an optional hydrator class(ClassMethods by default)
 When successfully authenticating, it will hydrate the prototype with the user data and return it inside the `AuthenticationResult`.

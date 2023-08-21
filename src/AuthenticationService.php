@@ -12,6 +12,7 @@ namespace Dot\Authentication;
 use Dot\Authentication\Adapter\AdapterInterface;
 use Dot\Authentication\Identity\IdentityInterface;
 use Dot\Authentication\Storage\StorageInterface;
+use Laminas\Authentication\Exception\ExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -113,25 +114,24 @@ class AuthenticationService implements AuthenticationInterface
         return !$this->storage->isEmpty();
     }
 
+
     /**
-     * @return void
+     * @throws ExceptionInterface
      */
-    public function clearIdentity()
+    public function clearIdentity(): void
     {
         $this->storage->clear();
     }
 
-    /**
-     * @param IdentityInterface $identity
-     */
-    public function setIdentity(IdentityInterface $identity)
-    {
-        $this->storage->write($identity);
-    }
 
     /**
-     * @return IdentityInterface
+     * @throws ExceptionInterface
      */
+    public function setIdentity(IdentityInterface $identity): void
+    {
+       $this->storage->write($identity);
+    }
+
     public function getIdentity(): ?IdentityInterface
     {
         return $this->storage->read();
