@@ -4,6 +4,7 @@ Concrete authentication service implementation of `\Dot\Authentication\Authentic
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-authentication-service)
 [![GitHub license](https://img.shields.io/github/license/dotkernel/dot-authentication-service)](https://github.com/dotkernel/dot-authentication-service/blob/2.0.2/LICENSE.md)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-authentication-service/2.9.1)
 
 # NOTE
 
