@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> dot-authentication-service is a wrapper on top of [laminas-authentication](https://github.com/laminas/laminas-authentication)
+>
+> ![OSS Lifecycle](https://img.shields.io/osslifecycle/laminas/laminas-authentication)
+ 
 > [!CAUTION]
 > ## Security-Only Maintenance Mode
 > 
